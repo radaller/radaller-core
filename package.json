@@ -22,8 +22,9 @@
     "react"
   ],
   "dependencies": {
-    "json-schema-ref-parser": "^3.2.0",
     "github-api": "^3.0.0",
+    "js-yaml": "^3.9.1",
+    "json-schema-ref-parser": "^3.2.0",
     "node-fetch": "^1.7.1",
     "sprintf-js": "^1.1.1"
   },

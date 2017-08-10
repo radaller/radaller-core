@@ -1,6 +1,12 @@
 class Abstract {
-    get(path) {
-        return this._get(path);
+    get(path, query) {
+        var $this = this;
+        return this
+            ._get(this._getResouceName(path))
+            .catch(function() {
+                return $this._getMany(path, query);
+            })
+            .then(JSON.stringify);
     }
     post(path, content) {
         return this._post(path, content);
@@ -10,6 +16,9 @@ class Abstract {
     }
     delete(path) {
         return this._delete(path);
+    }
+    _getResouceName(path){
+        return path + '.yaml';
     }
 }
 

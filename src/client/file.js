@@ -12,13 +12,9 @@ class File extends Abstract {
     get(path) {
         var filePath = p.join(this.basePath, path);
         return new Promise(function(resolve, reject) {
-            // var lstat = fs.lstatSync(filePath);
-            // if (!lstat.isFile()) {
-            //     throw sprintf("Requested path: %s is not a file.", filePath);
-            // }
             fs.readFile(filePath, 'utf8', function(err, data){
                 if (err) {
-                    reject(err);
+                    reject({message: "Requested resource doesn't exist."});
                 } else {
                     resolve(data);
                 }

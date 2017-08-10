@@ -2,7 +2,6 @@ var $RefParser = require('json-schema-ref-parser');
 
 class Abstract {
     constructor() {
-        this.pagesDir = 'pages';
     }
 
     /**
@@ -11,7 +10,7 @@ class Abstract {
      * @returns {*}
      */
     resolve(path) {
-        var pagePath = 'cms://' + this.pagesDir + path + '.yaml';
+        var pagePath = 'cms://' + path + '.yaml';
         var cmsResolver = this._getResolver();
         return $RefParser
             .dereference(pagePath,

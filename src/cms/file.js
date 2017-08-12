@@ -3,7 +3,6 @@ import {ClientFile} from '../client';
 
 const fs = require('fs');
 const p = require('path');
-var jsyaml = require('js-yaml');
 
 class File extends Abstract {
     constructor(config) {
@@ -16,9 +15,7 @@ class File extends Abstract {
     }
 
     _get(path) {
-        return this.clientFile
-            .get(path)
-            .then(jsyaml.load);
+        return this.clientFile.get(path);
     }
 
     _getMany(path, query) {
@@ -28,15 +25,35 @@ class File extends Abstract {
     }
 
     _put(path, content) {
-        //fs.writeFileSync(path, content);
+        var absolutePath = this.clientFile._getAbsolutePath(path);
+        return this._writeToFile(absolutePath, content);
     }
 
     _post(path, content) {
-        //fs.writeFileSync(path, content);
+        var absolutePath = this.clientFile._getAbsolutePath(path);
+        return this._writeToFile(absolutePath, content);
     }
 
     _delete(path) {
-        //fs.unlinkSync(path);
+        return new Promise(function(resolve, reject) {
+            fs.unlink(path, (err) => {
+                if (err) {
+                    reject(err);
+                }
+            })
+        });
+    }
+
+    _writeToFile(filePath, content) {
+        return new Promise(function(resolve, reject) {
+            fs.writeFile(filePath, content, 'utf8' , (err) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(content);
+                }
+            });
+        });
     }
 
     _collectFilesContent(filesPaths) {
@@ -49,7 +66,7 @@ class File extends Abstract {
     }
 
     _getDirFilesPaths(path, offset, limit) {
-        var absolutePath = p.join(this.basePath, path);
+        var absolutePath = this.clientFile._getAbsolutePath(path);
         return new Promise(function(resolve, reject){
             fs.readdir(absolutePath, function(err, dirData){
                 if (err) {
@@ -74,7 +91,7 @@ class File extends Abstract {
 
     _getFiles(dirItems) {
         return dirItems.filter(function (item) {
-            if(item.indexOf(".")>-1) {
+            if(item.indexOf(".") > -1) {
                 return item;
             }
         });

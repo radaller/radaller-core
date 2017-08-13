@@ -3,19 +3,18 @@ const jsyaml = require('js-yaml');
 
 class Abstract {
     get(path, query) {
-        const self = this;
         return this
-            ._get(this._getResourceName(path))
-            .then(jsyaml.load)
-            .catch(function() {
-                return self
-                    ._getMany(path, query)
-                    .then(function(contentList) {
-                        return contentList.map(jsyaml.load);
-                    });
-            })
+            ._readFile(Abstract._getFileName(path))
+            .then(Abstract._convertToObject)
+            .catch(
+                () => (
+                    this._readFilesFromDir(path, query)
+                    .then(contentList => contentList.map(Abstract._convertToObject))
+                )
+            )
             .then(JSON.stringify);
     }
+
     post(path, data) {
         return this
             ._post(path, json2yaml.stringify(data))
@@ -30,7 +29,12 @@ class Abstract {
         return this
             ._delete(path);
     }
-    _getResourceName(path){
+    static _convertToObject(data) {
+        let object = jsyaml.load(data.content);
+        object.id = data.id;
+        return object;
+    }
+    static _getFileName(path){
         return path + '.yaml';
     }
 }

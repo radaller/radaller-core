@@ -1,5 +1,5 @@
 import Abstract from './abstract';
-const fs = require('fs');
+const fs = require('fs-extra');
 const p = require('path');
 
 class File extends Abstract {
@@ -9,20 +9,17 @@ class File extends Abstract {
     }
 
     get(path) {
-        var absolutePath = this._getAbsolutePath(path);
-        return new Promise(function(resolve, reject) {
-            fs.readFile(absolutePath, 'utf8', function(err, data){
-                if (err) {
-                    reject({message: "Requested resource doesn't exist."});
-                } else {
-                    resolve(data);
-                }
-            });
-        });
+        const absolutePath = this._getAbsolutePath(path);
+        return fs.readFile(absolutePath, 'utf8')
+            .then(data => ({id: File._getFileId(path), content: data}));
     }
 
     _getAbsolutePath(path) {
         return p.join(this.basePath, path);
+    }
+
+    static _getFileId(path){
+        return p.basename(path, '.yaml');
     }
 }
 

@@ -8,8 +8,16 @@ class Abstract {
             .then(Abstract._convertToObject)
             .catch(
                 () => (
-                    this._readFilesFromDir(path, query)
-                    .then(contentList => contentList.map(Abstract._convertToObject))
+                    Promise.all([
+                        this._readFilesFromDir(path, query),
+                        this._getDirFilesPaths(path)
+                    ])
+                    .then(promises => (
+                        {
+                            items: promises[0].map(Abstract._convertToObject),
+                            total: promises[1].length
+                        }
+                    ))
                 )
             )
             .then(JSON.stringify);
@@ -17,17 +25,18 @@ class Abstract {
 
     post(path, data) {
         return this
-            ._post(path, json2yaml.stringify(data))
+            ._post(Abstract._getFileName(path), json2yaml.stringify(data))
             .then(JSON.stringify);
     }
     put(path, data) {
+        data.id = undefined;
         return this
-            ._put(path, json2yaml.stringify(data))
-            .then(JSON.stringify);
+            ._put(Abstract._getFileName(path), json2yaml.stringify(data))
+            .then(() => JSON.stringify(data));
     }
     delete(path) {
         return this
-            ._delete(path);
+            ._delete(Abstract._getFileName(path));
     }
     static _convertToObject(data) {
         let object = jsyaml.load(data.content);

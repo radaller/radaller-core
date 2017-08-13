@@ -51,6 +51,9 @@ class File extends Abstract {
     _getDirFilesPathsByPage(path, offset = 0, limit = 100) {
         return this._getDirFilesPaths(path)
             .then(
+                fileNames => fileNames.reverse()
+            )
+            .then(
                 fileNames => fileNames.slice(parseInt(offset), parseInt(offset) + parseInt(limit))
             )
             .then(

@@ -16,7 +16,7 @@ class Git extends ClientFile {
         this._gitPush();
     }
     _delete(path) {
-        super._delete(path);
+        super._deleteFile(path);
         this._commit();
         this._gitPush();
     }

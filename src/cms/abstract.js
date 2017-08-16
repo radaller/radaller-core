@@ -1,10 +1,12 @@
-const json2yaml = require('json2yaml');
 const jsyaml = require('js-yaml');
+const p = require('path');
+const pluralize = require('pluralize');
+const sprintf = require("sprintf-js").sprintf;
 
 class Abstract {
     get(path, query) {
         return this
-            ._readFile(Abstract._getFileName(path))
+            ._readFile(Abstract._addFileExtension(path))
             .then(Abstract._convertToObject)
             .catch(
                 () => (
@@ -23,28 +25,53 @@ class Abstract {
             .then(JSON.stringify);
     }
 
-    post(path, data) {
-        return this
-            ._post(Abstract._getFileName(path), json2yaml.stringify(data))
-            .then(JSON.stringify);
-    }
     put(path, data) {
         data.id = undefined;
+        delete data.id;
         return this
-            ._put(Abstract._getFileName(path), json2yaml.stringify(data))
-            .then(() => JSON.stringify(data));
+            ._writeToFile(Abstract._addFileExtension(path), jsyaml.safeDump(data))
+            .then(() => this.get(path, {}));
     }
-    delete(path) {
+
+    post(path, data) {
         return this
-            ._delete(Abstract._getFileName(path));
+            ._generateNewFileName(path)
+            .then(createPath => this._writeToFile(Abstract._addFileExtension(createPath), jsyaml.safeDump(data)))
+            .then((newFilePath) => this.get(Abstract._removeFileExtension(newFilePath), {}));
     }
+
+    remove(path) {
+        return this
+            ._deleteFile(Abstract._addFileExtension(path))
+            .then(() => ({id: p.basename(path)}))
+            .then(JSON.stringify);
+    }
+
     static _convertToObject(data) {
         let object = jsyaml.load(data.content);
         object.id = data.id;
         return object;
     }
-    static _getFileName(path){
+
+    static _addFileExtension(path){
         return path + '.yaml';
+    }
+
+    static _removeFileExtension(path) {
+        return path.substring(0, path.indexOf("."));
+    }
+
+    _generateNewFileName(path) {
+        return this
+            ._getDirFilesPaths(path)
+            .then(files => files.length)
+            .then(filesAmount => Abstract._getNewFileName(filesAmount + 1, path));
+    }
+
+    static _getNewFileName(id, path) {
+        const folder = p.basename(path);
+        const newFileName = sprintf('%s_%s', id, pluralize.singular(folder));
+        return p.join(path, newFileName);
     }
 }
 

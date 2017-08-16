@@ -24,22 +24,14 @@ class File extends Abstract {
             .then(this._collectFilesContent);
     }
 
-    _put(path, content) {
-        const absolutePath = this.clientFile._getAbsolutePath(path);
-        return this._writeToFile(absolutePath, content);
-    }
-
-    _post(path, content) {
-        const absolutePath = this.clientFile._getAbsolutePath(path);
-        return this._writeToFile(absolutePath, content);
-    }
-
-    _delete(path) {
-        return fs.unlink(path);
-    }
-
     _writeToFile(filePath, content) {
-        return fs.writeFile(filePath, content, 'utf8');
+        const absolutePath = this.clientFile._getAbsolutePath(filePath);
+        return fs.writeFile(absolutePath, content, 'utf8').then(() => filePath);
+    }
+
+    _deleteFile(path) {
+        const absolutePath = this.clientFile._getAbsolutePath(path);
+        return fs.unlink(absolutePath);
     }
 
     _collectFilesContent(filesPaths) {
@@ -63,8 +55,7 @@ class File extends Abstract {
 
     _getDirFilesPaths(path) {
         let absolutePath = this.clientFile._getAbsolutePath(path);
-        return fs.readdir(absolutePath)
-            .then(File._filterFiles)
+        return fs.readdir(absolutePath).then(File._filterFiles);
     }
 
     static _filterFiles(dirItems) {

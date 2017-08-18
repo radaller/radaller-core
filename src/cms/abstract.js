@@ -22,6 +22,11 @@ class Abstract {
                     ))
                 )
             )
+            .catch(
+                () => {
+                    throw {message: "Requested resource does not exist."}
+                }
+            )
             .then(JSON.stringify);
     }
 

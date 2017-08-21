@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/radaller/radaller-core.svg?branch=master)](https://travis-ci.org/radaller/radaller-core)
+
 # Quick start
 
 - **Install local module**

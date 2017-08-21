@@ -18,25 +18,13 @@ class File extends Abstract {
         return this.clientFile.get(path);
     }
 
-    _readFilesFromDir(path, query) {
-        let {offset=0, limit=100, filter="{}"} = query;
-        filter = JSON.parse(filter);
+    _readFiles(path, query) {
+        let {offset=0, limit=100, filter} = query;
         return this
-            ._getDirFilesPathsByPage(path, offset, limit, filter)
+            ._getFilePathsByFilter(path, filter)
+            .then(this._paginate(offset, limit))
+            .then(this._joinPath(path))
             .then(this._collectFilesContent);
-    }
-
-    _isFile(filePath) {
-        const absolutePath = this.clientFile._getAbsolutePath(filePath);
-        return fs.fstat(absolutePath).then(
-            (stats) => new Promise((resolve, reject) => {
-                if (stats.isFile()) {
-                    resolve(filePath);
-                } else {
-                    reject(filePath);
-                }
-            })
-        );
     }
 
     _writeToFile(filePath, content) {
@@ -49,36 +37,60 @@ class File extends Abstract {
         return fs.unlink(absolutePath);
     }
 
+    _getFilePathsByFilter(path, filter) {
+        return this
+            ._getDirFilesPaths(path)
+            .then(File._arrayReverse)
+            .then(this._applyFilter(filter))
+    }
+
+    _isFile(filePath) {
+        const absolutePath = this.clientFile._getAbsolutePath(filePath);
+        return fs.stat(absolutePath).then(this._checkIsFile(filePath));
+    }
+
+    _checkIsFile(filePath) {
+        return stats => {
+            return new Promise((resolve, reject) => {
+                if (stats.isFile()) {
+                    resolve(filePath);
+                } else {
+                    reject(filePath);
+                }
+            })
+        }
+    }
+
     _collectFilesContent(filesPaths) {
         return Promise.all(
             filesPaths.map(filePath => this._readFile(filePath))
         );
     }
 
-    _getDirFilesPathsByPage(path, offset, limit, filter) {
-        return this._getDirFilesPaths(path)
-            .then(
-                fileNames => fileNames.reverse()
-            )
-            .then(
-                fileNames => {
-                    if (filter.id !== undefined) {
-                        return fileNames.filter(fileName => filter.id.includes(Abstract._removeFileExtension(fileName)))
-                    }
-                    return fileNames;
-                }
-            )
-            .then(
-                fileNames => fileNames.slice(parseInt(offset), parseInt(offset) + parseInt(limit))
-            )
-            .then(
-                fileNames => fileNames.map(fileName => p.join(path, fileName))
-            );
+    static _arrayReverse(array) {
+        return array.reverse();
+    }
+
+    _applyFilter(filter = {}) {
+        return fileNames => {
+            if (filter.id !== undefined) {
+                return fileNames.filter(fileName => filter.id.includes(Abstract._removeFileExtension(fileName)))
+            }
+            return fileNames;
+        }
+    }
+
+    _paginate(offset, limit) {
+        return fileNames => fileNames.slice(parseInt(offset), parseInt(offset) + parseInt(limit));
     }
 
     _getDirFilesPaths(path) {
         let absolutePath = this.clientFile._getAbsolutePath(path);
         return fs.readdir(absolutePath).then(File._filterFiles);
+    }
+
+    _joinPath(path) {
+        return fileNames => fileNames.map(fileName => p.join(path, fileName));
     }
 
     static _filterFiles(dirItems) {

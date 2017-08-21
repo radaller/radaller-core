@@ -95,7 +95,7 @@ fs.unlink = (path) => {
     });
 };
 
-fs.fstat = (path) => {
+fs.stat = (path) => {
     return new Promise((resolve, reject) => {
         process.nextTick(
             () => {

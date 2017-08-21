@@ -9,14 +9,23 @@ const GET_ITEMS_TOTAL = 1;
 
 class Abstract {
     get(path, query) {
-        const getOne = () => (
+        return this
+            ._isFile(Abstract._addFileExtension(path))
+            .then(this._getOne(path), this._getMany(path, query))
+            .then(JSON.stringify);
+    }
+
+    _getOne(path) {
+        return () => (
             this._readFile(Abstract._addFileExtension(path)).then(Abstract._convertToObject)
         );
+    }
 
-        const getMany = () => {
+    _getMany(path, query) {
+        return () => {
             const promisesForGetMany = [];
-            promisesForGetMany[GET_PATHS_TO_ITEMS] = this._readFilesFromDir(path, query);
-            promisesForGetMany[GET_ITEMS_TOTAL] = this._getDirFilesPaths(path);
+            promisesForGetMany[GET_PATHS_TO_ITEMS] = this._readFiles(path, query);
+            promisesForGetMany[GET_ITEMS_TOTAL] = this._getFilePathsByFilter(path, query.filter);
             return Promise.all(promisesForGetMany)
                 .then(promises => (
                     {
@@ -25,10 +34,6 @@ class Abstract {
                     }
                 ))
         };
-        return this
-            ._isFile(Abstract._addFileExtension(path))
-            .then(getOne, getMany)
-            .then(JSON.stringify);
     }
 
     put(path, data) {

@@ -50,13 +50,13 @@ it('read directory content page with limit', () => {
 it('read directory content with filter', () => {
     expect.assertions(1);
     const responseObject = {
-        total: 11,
+        total: 2,
         items: [
             {key10: 'value10', id: '10_simple'},
             {key8: 'value8', id: '8_simple'}
         ]
     };
-    return fileCms.get('11_files_directory', {filter:'{"id":["10_simple", "8_simple"]}'}).then(data => {
+    return fileCms.get('11_files_directory', {filter:{"id":["10_simple", "8_simple"]}}).then(data => {
         expect(data).toEqual(JSON.stringify(responseObject))
     });
 });

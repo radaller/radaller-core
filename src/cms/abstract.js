@@ -2,31 +2,32 @@ const jsyaml = require('js-yaml');
 const p = require('path');
 const pluralize = require('pluralize');
 const sprintf = require("sprintf-js").sprintf;
+const Ajv = require('ajv');
+
+const GET_PATHS_TO_ITEMS = 0;
+const GET_ITEMS_TOTAL = 1;
 
 class Abstract {
     get(path, query) {
+        const getOne = () => (
+            this._readFile(Abstract._addFileExtension(path)).then(Abstract._convertToObject)
+        );
+
+        const getMany = () => {
+            const promisesForGetMany = [];
+            promisesForGetMany[GET_PATHS_TO_ITEMS] = this._readFilesFromDir(path, query);
+            promisesForGetMany[GET_ITEMS_TOTAL] = this._getDirFilesPaths(path);
+            return Promise.all(promisesForGetMany)
+                .then(promises => (
+                    {
+                        total: promises[GET_ITEMS_TOTAL].length,
+                        items: promises[GET_PATHS_TO_ITEMS].map(Abstract._convertToObject)
+                    }
+                ))
+        };
         return this
-            ._readFile(Abstract._addFileExtension(path))
-            .then(Abstract._convertToObject)
-            .catch(
-                () => (
-                    Promise.all([
-                        this._readFilesFromDir(path, query),
-                        this._getDirFilesPaths(path)
-                    ])
-                    .then(promises => (
-                        {
-                            items: promises[0].map(Abstract._convertToObject),
-                            total: promises[1].length
-                        }
-                    ))
-                )
-            )
-            .catch(
-                () => {
-                    throw {message: "Requested resource does not exist."}
-                }
-            )
+            ._isFile(Abstract._addFileExtension(path))
+            .then(getOne, getMany)
             .then(JSON.stringify);
     }
 
@@ -41,8 +42,33 @@ class Abstract {
     post(path, data) {
         return this
             ._generateNewFileName(path)
-            .then(createPath => this._writeToFile(Abstract._addFileExtension(createPath), jsyaml.safeDump(data)))
-            .then((newFilePath) => this.get(Abstract._removeFileExtension(newFilePath), {}));
+            .then(createPath => {
+                return this._writeToFile(Abstract._addFileExtension(createPath), jsyaml.safeDump(data));
+            })
+            .then((newFilePath) => {
+                return this.get(Abstract._removeFileExtension(newFilePath), {});
+            });
+    }
+
+    validate(path, data) {
+        const schemaPath = Abstract._getPathToSchema(path);
+        return this
+            ._readFile(Abstract._addFileExtension(schemaPath))
+            .then(Abstract._convertToObject)
+            .then((schema) => {
+                const ajv = new Ajv();
+                const validate = ajv.compile(schema);
+                const valid = validate(data);
+                if (!valid) {
+                    throw {message: "Data is not valid", err: validate.errors};
+                }
+                return true;
+            });
+    }
+
+    static _getPathToSchema(path) {
+        const schemaName =p.dirname(path).replace('/', '_');
+        return p.join('schemas', schemaName);
     }
 
     remove(path) {

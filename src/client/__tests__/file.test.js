@@ -8,7 +8,7 @@ let fileClient = new File({
 
 it('get simple content object', () => {
     expect.assertions(1);
-    return fileClient.get('1_simple.yaml').then(data => {
+    return fileClient.get('simple/1_simple.yaml').then(data => {
         expect(data).toEqual({id: '1_simple', content:'key1: value1'})
     });
 });

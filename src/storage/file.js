@@ -2,7 +2,7 @@
 const fs = require('fs-extra');
 const p = require('path');
 
-export default (Document) => {
+export default (Document, DocummentCollection) => {
     return class {
         constructor(config) {
             this.basePath = config.basePath;
@@ -16,18 +16,27 @@ export default (Document) => {
             return new Document(key, data);
         }
 
-        getCollection(type, query) {
+        fetchDocumentCollection(type, query) {
             let {offset = 0, limit = 100, filter} = query;
+            let total;
             return this
                 .getDocumentList(type, filter)
+                .then(documentKeys => {
+                    total = documentKeys.length;
+                    return documentKeys;
+                })
                 .then(_paginate(offset, limit))
                 .then(_map(fileName => p.join(type, fileName)))
-                .then(_collectDocuments(this.basePath));
+                .then(_collectDocuments(this.basePath))
+                .then(documents => {
+                    const collection = new DocummentCollection(documents, total);
+                    return collection.toPrettyObject();
+                });
         }
 
         saveDocument(document) {
             const filePath = p.join(this.basePath, document.getKey()) + '.yaml';
-            return fs.writeFile(filePath, document.toSaveString(), 'utf8').then(() => {
+            return fs.writeFile(filePath, document.toContentString(), 'utf8').then(() => {
                 return document.getKey();
             });
         }
@@ -51,13 +60,13 @@ export default (Document) => {
                 .then(_map(_removeExtension))
                 .then(_applyFilter(filter));
         }
-    }
+    };
+
     function _readFile(basePath, key) {
         const absolutePath = p.join(basePath, key) + '.yaml';
         return fs.readFile(absolutePath, 'utf8')
             .then(data => {
                 const doc = new Document(key, data);
-                //console.log(doc);
                 return doc.toPrettyObject()
             });
     }

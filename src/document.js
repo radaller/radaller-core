@@ -17,7 +17,7 @@ export default class Document {
     getKey() {
         return this.key;
     }
-    toSaveString() {
+    toContentString() {
         return jsyaml.safeDump(this.data);
     }
     toPrettyObject() {

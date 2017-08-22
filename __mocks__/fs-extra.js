@@ -1,6 +1,4 @@
 const fileSystem = {
-    'data/1_simple.yaml': `key1: value1`,
-    ////////////////////////////////////
     'data/2_files_directory': [
         'directory_1',
         '1_simple.yaml',

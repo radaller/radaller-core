@@ -1,4 +1,11 @@
 'use strict';
 
-export * from './client/index';
-export * from './cms/index';
+import FileStorage from './storage/file';
+import Document from './document';
+import Cms from './cms';
+
+const FileCms = Cms(
+    FileStorage(Document)
+);
+
+export { FileCms };

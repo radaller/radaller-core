@@ -1,11 +1,7 @@
-const jsyaml = require('js-yaml');
 const p = require('path');
 const pluralize = require('pluralize');
 const sprintf = require("sprintf-js").sprintf;
 const Ajv = require('ajv');
-
-const GET_PATHS_TO_ITEMS = 0;
-const GET_ITEMS_TOTAL = 1;
 
 export default (Storage) => {
     return class Cms {
@@ -58,24 +54,11 @@ export default (Storage) => {
 }
 
 function _getOne(storage, path) {
-    return () => (
-        storage.fetchDocument(path)
-    );
+    return () => storage.fetchDocument(path);
 }
 
 function _getMany(storage, path, query) {
-    return () => {
-        const promisesForGetMany = [];
-        promisesForGetMany[GET_PATHS_TO_ITEMS] = storage.getCollection(path, query);
-        promisesForGetMany[GET_ITEMS_TOTAL] = storage.getDocumentList(path, query.filter);
-        return Promise.all(promisesForGetMany)
-            .then(promises => (
-                {
-                    total: promises[GET_ITEMS_TOTAL].length,
-                    items: promises[GET_PATHS_TO_ITEMS]
-                }
-            ));
-    };
+    return () => storage.fetchDocumentCollection(path, query);
 }
 
 function _getPathToSchema(path) {

@@ -1,4 +1,11 @@
 const fileSystem = {
+    'data/reference/1_reference.yaml': `
+        key: value1
+        reference: 
+            $ref: cms://reference/2_reference.yaml
+    `,
+    'data/reference/2_reference.yaml': `key: value2`,
+    /////////////////////////////////////
     'data/2_files_directory': [
         'directory_1',
         '1_simple.yaml',

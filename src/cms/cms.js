@@ -21,7 +21,7 @@ export default (Storage) => {
                 .then(filePath => this.get(filePath));
         }
         post(path, data) {
-            return _generateNewFileName(this.storage, path)
+            return _getNewDocumentKey(this.storage, path)
                 .then(createPath => {
                     const document = Storage.getDocument(createPath, data);
                     return this.storage.saveDocument(document);
@@ -66,7 +66,7 @@ function _getPathToSchema(path) {
     return p.join('schemas', schemaName);
 }
 
-function _generateNewFileName(storage, path) {
+function _getNewDocumentKey(storage, path) {
     return storage
         .getDocumentList(path)
         .then(files => files.length)

@@ -1,4 +1,4 @@
-import {ClientFile} from '../client';
+import {ClientFile} from '../../cli/index';
 
 class Git extends ClientFile {
     constructor(config) {

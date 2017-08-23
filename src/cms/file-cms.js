@@ -9,4 +9,4 @@ const FileCms = Cms(
     FileStorage(Document, DocumentCollection)
 );
 
-export { FileCms };
+export default FileCms;

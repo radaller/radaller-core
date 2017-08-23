@@ -2,9 +2,9 @@
   "name": "radaller-core",
   "version": "0.1.0",
   "description": "Cms engine, that allows to store content as yaml.",
-  "main": "dist/index.js",
+  "main": "index",
   "directories": {
-    "lib": "lib"
+    "lib": "dist"
   },
   "scripts": {
     "test": "jest",
@@ -12,7 +12,10 @@
   },
   "jest": {
     "verbose": true,
-    "coveragePathIgnorePatterns": ["/dist/", "/node_modules/"]
+    "coveragePathIgnorePatterns": [
+      "/dist/",
+      "/node_modules/"
+    ]
   },
   "repository": {
     "type": "git",

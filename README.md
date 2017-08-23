@@ -2,7 +2,13 @@
 
 # Quick start
 
-- **Install local module**
+> Important!  
+> Do the following before using:
+>- checkout this repository
+>- run `npm install`
+>- run `npm run build`
+
+- **Inside your Project install local module**
 
 ```javascript
 npm install ./path/to/radaller-core
@@ -10,21 +16,13 @@ npm install ./path/to/radaller-core
 
 - **Import**
 ```javascript
-import { ClientFile, ClientHttp } from 'radaller-core';
+import HttpCli from 'radaller-core/http-cli';
 ```
 
-- **ClientFile**
+- **HttpCli**
 ```javascript
-const client = new ClientFile({
-    basePath: 'path/to/data/folder'
-});
-```
-
-
-- **ClientHttp**
-```javascrypt
-const client = new ClientHttp({
-    basePath: 'https://raw.githubusercontent.com/osvarychevskyi/test-cms-data/master'
+const client = new HttpCli({
+    basePath: 'https://raw.githubusercontent.com/radaller/radaller-mock-data/master'
 });
 ```
 

@@ -35,20 +35,18 @@ export default (Document, DocummentCollection) => {
         }
 
         saveDocument(document) {
-            const filePath = p.join(this.basePath, document.getKey()) + '.yaml';
+            const filePath = _getFilePath(this.basePath, document.getKey());
             return fs.writeFile(filePath, document.toContentString(), 'utf8').then(() => {
                 return document.getKey();
             });
         }
 
         deleteDocument(key) {
-            const filePath = p.join(this.basePath, key) + '.yaml';
-            return fs.unlink(filePath);
+            return fs.unlink(_getFilePath(this.basePath, key));
         }
 
         isDocument(key) {
-            const filePath = p.join(this.basePath, key) + '.yaml';
-            return fs.stat(filePath).then(_checkIsFile(key));
+            return fs.stat(_getFilePath(this.basePath, key)).then(_checkIsFile(key));
         }
 
         getDocumentList(type, filter = {}) {
@@ -63,8 +61,7 @@ export default (Document, DocummentCollection) => {
     };
 
     function _readFile(basePath, key) {
-        const absolutePath = p.join(basePath, key) + '.yaml';
-        return fs.readFile(absolutePath, 'utf8')
+        return fs.readFile(_getFilePath(basePath, key), 'utf8')
             .then(data => {
                 const doc = new Document(key, data);
                 return doc.toPrettyObject()
@@ -77,6 +74,10 @@ export default (Document, DocummentCollection) => {
                 filesPaths.map(filePath => _readFile(basePath, filePath))
             );
         }
+    }
+
+    function _getFilePath(basePath, key) {
+        return p.join(basePath, key) + '.yaml';
     }
 }
 

@@ -9,8 +9,7 @@ export default (Storage) => {
             this.storage = new Storage(config);
         }
         get(path, query = {}) {
-            return this.storage
-                .isDocument(path)
+            return _isDocument(path)
                 .then(_getOne(this.storage, path), _getMany(this.storage, path, query))
                 .then(JSON.stringify);
         }
@@ -53,6 +52,12 @@ export default (Storage) => {
     };
 }
 
+function _isDocument(path) {
+    return new Promise((resolve, reject) => {
+        path.indexOf(".") > -1 ? resolve() : reject();
+    });
+}
+
 function _getOne(storage, path) {
     return () => storage.fetchDocument(path);
 }
@@ -62,7 +67,7 @@ function _getMany(storage, path, query) {
 }
 
 function _getPathToSchema(path) {
-    const schemaName = p.dirname(path).replace('/', '_');
+    const schemaName = p.dirname(path).replace('/', '_') + '.yaml';
     return p.join('schemas', schemaName);
 }
 
@@ -75,6 +80,6 @@ function _getNewDocumentKey(storage, path) {
 
 function _getNewFileName(id, path) {
     const folder = p.basename(path);
-    const newFileName = sprintf('%s_%s', id, pluralize.singular(folder));
+    const newFileName = sprintf('%s_%s.yaml', id, pluralize.singular(folder));
     return p.join(path, newFileName);
 }

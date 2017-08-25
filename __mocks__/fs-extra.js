@@ -100,24 +100,4 @@ fs.unlink = (path) => {
     });
 };
 
-fs.stat = (path) => {
-    return new Promise((resolve, reject) => {
-        process.nextTick(
-            () => {
-                let isFile = false;
-                if (fileSystem[path] && path.indexOf(".") > -1) {
-                    isFile = true
-                }
-                if (!fileSystem[path]) {
-                    reject("File does nor exist.");
-                }
-                return resolve({
-                    isFile: () => isFile
-                });
-            }
-        );
-    });
-};
-
-
 module.exports = fs;

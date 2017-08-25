@@ -3,7 +3,7 @@ export default class DocumentCollection {
         this.documents = documents;
         this.total = total;
     }
-    toPrettyObject() {
+    toJson() {
         let object = {};
         object.total = this.total;
         object.items = this.documents;

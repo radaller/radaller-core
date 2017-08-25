@@ -1,10 +1,10 @@
 import GithubCms from '../github-cms';
 
 let githubCms = new GithubCms({
-    username: 'osvarychevskyi',
-    token: 'dcdfb578d5b950f41cac0db9bf79dd83353f797a',
-    owner: 'radaller',
-    repository: 'radaller-mock-data'
+    username: 'username',
+    token: 'token',
+    owner: 'owner',
+    repository: 'repository'
 });
 
 it('read simple content', () => {

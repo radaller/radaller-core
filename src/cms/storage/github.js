@@ -17,7 +17,7 @@ export default (Document, DocumentCollection) => {
                 username: config.username,
                 token: config.token
             });
-            this.repo = this.gh.getRepo(config.owner, config.repository);
+            this.repo = this.gh.getRepo(_getFullRepoName(config));
         }
 
         fetchDocument(path) {
@@ -56,6 +56,14 @@ export default (Document, DocumentCollection) => {
             return new Document(path, data);
         }
     };
+
+    function _getFullRepoName(config) {
+        if (config.repository.indexOf("/") > -1) {
+            return config.repository;
+        } else {
+            return `${config.username}/${config.repository}`;
+        }
+    }
 
     function _readFile(repo, path) {
         return repo

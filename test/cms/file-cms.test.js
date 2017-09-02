@@ -2,7 +2,7 @@ jest.mock('fs-extra');
 
 const fs = require('fs-extra');
 
-import FileCms from '../file-cms';
+import FileCms from '../../src/cms/file-cms';
 
 let fileCms = new FileCms({
     basePath: './data'

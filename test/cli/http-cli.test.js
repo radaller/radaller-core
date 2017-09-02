@@ -1,6 +1,6 @@
 jest.mock('node-fetch');
 
-import HttpCli from '../http-cli';
+import HttpCli from '../../src/cli/http-cli';
 
 let httpClient = new HttpCli({
     basePath: 'https://localhost'

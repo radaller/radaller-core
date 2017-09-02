@@ -1,4 +1,4 @@
-import GithubCms from '../github-cms';
+import GithubCms from '../../src/cms/github-cms';
 
 let githubCms = new GithubCms({
     username: 'username',

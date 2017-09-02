@@ -1,6 +1,14 @@
 language: node_js
 node_js:
-  - "node"
+  - node
 script:
   - npm test
   - npm run build
+deploy:
+  provider: npm
+  email: a.ekspo@gmail.com
+  api_key:
+    secure: FNrpA6ZQP3h36rh9dExIiMwc+8IvsPKIwpGmdxXVBuprLOW13JJL1j9tR80LJSqX2qP3XF0Ac+zdrGmjDl2MbU6EGauK/eMLXOnHovdmdzM4Q+fdab2wgLCLbo4Ij7l/vx63/ypVrTlclF5wLCqgKlx4UPY05cJiDEwZH0mGCiAORrf1yV2pJpOPG4H0YwMsFi3vkkvcWXFOPUqIbZPF8kfyg5Jw2WINsaAkDexCZJtrGXmwXGGzTaRb6xy7AZht5mp0tfzPDe3CGckQDxIXhrr1hxE9tBocLvk6gFufNbWFtdJOLNgM/Jg3aAuSDHmpWLnhH/ZiVEjTc4kI1cUotM9LLoFi/YEQCwJ9gLxmovRoLPu9793es47+ToA7m4wUJVS8/veJilESP/0sOVTWEUgSOCH9+g+I7NVmnT8HFqvLtRmmXSmgze3vIyX19e3yDP4mw1tHL49d6L6D9caRvUUmaivbSclfbYKgidUutbIw0jxrUGg879YcTX84MXEaRBOoWIIK0pcpZHOfP6z2A8MUQgPgxuPxz5QyWxotlyF5qwxdEe4wp5GzKACXbF7FJoWpkHK230q8C2Q4aU/5wWQtBHQQ3wIkD22anXjUlFRtZa9KBTbz6czgXRuoJ4B6ZrtXqO6kfRU9LkcrKbSPpjQ3y8moMRKg06ELLFgiO18=
+  on:
+    branch: master
+

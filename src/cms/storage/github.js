@@ -13,10 +13,14 @@ const p = require('path');
 export default (Document, DocumentCollection) => {
     return class {
         constructor(config) {
-            this.gh = new GitHubAPI({
+            const gitConfig = {
                 username: config.username,
                 token: config.token
-            });
+            };
+            if (config.apiBase) {
+                gitConfig.apiBase = config.apiBase;
+            }
+            this.gh = new GitHubAPI(gitConfig);
             this.repo = this.gh.getRepo(_getFullRepoName(config));
         }
 

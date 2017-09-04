@@ -9,7 +9,9 @@ before_deploy:
   - git config --global user.name "Travis CI"
   - git remote rm origin
   - git remote add origin https://${GH_TOKEN}@github.com/radaller/radaller-core.git
-  - npm --no-git-tag-version version from-git || npm --no-git-tag-version version patch -m "Upgrade to %s. [skip ci]"
+  - npm --no-git-tag-version version from-git || npm --no-git-tag-version version patch
+  - git add package.json
+  - git commit -m "npm version update. [skip ci]"
   - git push origin HEAD:master
 deploy:
   skip_cleanup: true

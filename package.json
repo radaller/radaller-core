@@ -1,6 +1,6 @@
 {
   "name": "radaller-core",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Cms engine, that allows to store content as yaml.",
   "main": "index",
   "directories": {

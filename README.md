@@ -2,16 +2,10 @@
 
 # Quick start
 
-> Important!  
-> Do the following before using:
->- checkout this repository
->- run `npm install`
->- run `npm run build`
-
-- **Inside your Project install local module**
+- **Install**
 
 ```javascript
-npm install ./path/to/radaller-core
+npm install --save radaller-core
 ```
 
 - **Import**

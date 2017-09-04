@@ -4,6 +4,13 @@ node_js:
 script:
   - npm test
   - npm run build
+before_deploy:
+  - git config --global user.email "travis@travis-ci.org"
+  - git config --global user.name "Travis CI"
+  - git remote rm origin
+  - git remote add origin https://${GH_TOKEN}@github.com/radaller/radaller-core.git
+  - npm --no-git-tag-version version from-git || npm --no-git-tag-version version patch -m "Upgrade to %s. [skip ci]"
+  - git add package.json && git push --set-upstream origin master
 deploy:
   skip_cleanup: true
   provider: npm
@@ -12,4 +19,6 @@ deploy:
     secure: FNrpA6ZQP3h36rh9dExIiMwc+8IvsPKIwpGmdxXVBuprLOW13JJL1j9tR80LJSqX2qP3XF0Ac+zdrGmjDl2MbU6EGauK/eMLXOnHovdmdzM4Q+fdab2wgLCLbo4Ij7l/vx63/ypVrTlclF5wLCqgKlx4UPY05cJiDEwZH0mGCiAORrf1yV2pJpOPG4H0YwMsFi3vkkvcWXFOPUqIbZPF8kfyg5Jw2WINsaAkDexCZJtrGXmwXGGzTaRb6xy7AZht5mp0tfzPDe3CGckQDxIXhrr1hxE9tBocLvk6gFufNbWFtdJOLNgM/Jg3aAuSDHmpWLnhH/ZiVEjTc4kI1cUotM9LLoFi/YEQCwJ9gLxmovRoLPu9793es47+ToA7m4wUJVS8/veJilESP/0sOVTWEUgSOCH9+g+I7NVmnT8HFqvLtRmmXSmgze3vIyX19e3yDP4mw1tHL49d6L6D9caRvUUmaivbSclfbYKgidUutbIw0jxrUGg879YcTX84MXEaRBOoWIIK0pcpZHOfP6z2A8MUQgPgxuPxz5QyWxotlyF5qwxdEe4wp5GzKACXbF7FJoWpkHK230q8C2Q4aU/5wWQtBHQQ3wIkD22anXjUlFRtZa9KBTbz6czgXRuoJ4B6ZrtXqO6kfRU9LkcrKbSPpjQ3y8moMRKg06ELLFgiO18=
   on:
     branch: master
-
+env:
+  global:
+    secure: QwerQMm0yUN0w1Qf2F1BWRe9AMvEc2J0ajuGJM4mNSSEu26r/69PxwOfeZUFXEeAm7VTJSSufXxZ7b4tVxYBcqKPiTdavz/5N8vk497RHJn2viq4ZBQhRyJKzUkioVlhnqahOV2ENZqotPh/+tDnso+Bo7OW/Ev9swgqsHTpPSq7Fe4Eerdm+TJ7Ueaqno5wPQ0UbEcq2DF5oj1+awQvI8dBbqlOuI4ZpbJa7jDdeD4NeTrUrJudmp9s7kgN9cgbiiVdG61aMZlWsMOKTtFNybP5CdufX4UYpx7cv1H0SUOkZ30nsebw983Z4muPrlw8c4jVxbaIHgA/554w7fYSJv3/pZQNwnQKxdbGPGxGzJznO2EjwHZAXtsG2qulpQnZw5x2uwkjvh4Jc+TFAnMFXmQnWsvHXM5dr+Nw3LvLZSL6bgnmqzNExnjanqiww1DwGkaJw0sGiX8fdr9vlqLoUu7tMoEvRUEHoN+Gf2Yj4VMRfoGjhV0Pj8aWO7oupvUG/ySutBG8NchrucpINXBcwtgtNXdCRi73ghn1wlYDMzFnOhddiOPGzCfIYBfXNFSOfQkwPC/OUypjca7MQ/ODah7KgkdsUAvzCgf4bD9yNk9lNLKF+XSpmwf+CrOiA/6YngroBoCAYDmGmrLGfp1PPJEVgbIJvCNrU0CF6u0vGb8=

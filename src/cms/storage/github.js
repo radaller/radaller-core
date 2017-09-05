@@ -18,9 +18,10 @@ export default (Document, DocumentCollection) => {
                 token: config.token
             };
             if (config.apiBase) {
-                gitConfig.apiBase = config.apiBase;
+                this.gh = new GitHubAPI(gitConfig, config.apiBase);
+            } else {
+                this.gh = new GitHubAPI(gitConfig);
             }
-            this.gh = new GitHubAPI(gitConfig);
             this.repo = this.gh.getRepo(_getFullRepoName(config));
         }
 

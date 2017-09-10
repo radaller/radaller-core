@@ -5,41 +5,30 @@ export default class {
         this.gitHubToken = new GitHubToken();
     }
 
-    authenticate(credentials) {
-        let auth = null;
-        if (typeof credentials === "string") {
-            auth = this._authenticateByToken(credentials);
-        } else {
-            auth = this._authenticateByBaseAuth(credentials);
-        }
-        return auth;
-    }
-
-    _authenticateByToken(token) {
+    getAuthByToken(token) {
         return this.gitHubToken
             .getUserByToken(token)
             .getProfile()
-            .catch(e => {
-                if (e.status !== 200) {
-                    throw { message: 'Token is not valid.'};
-                }
-                throw e;
-            })
             .then(response => {
                 return {
                     username: response.data.login,
                     token: token
                 };
+            })
+            .catch(e => {
+                if (e.status !== 200) {
+                    throw { message: 'Token is not valid.'};
+                }
+                throw e;
             });
     }
 
-    _authenticateByBaseAuth(baseAuth) {
+    getAuthByBaseAuth(baseAuth) {
         return this._generatePersonalTokenIfNotExist(baseAuth)
             .then(response => {
-                const data = response.json();
                 return {
                     username: baseAuth.username,
-                    token: data.token
+                    token: response.data.token
                 };
             });
     }

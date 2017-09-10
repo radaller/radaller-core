@@ -1,6 +1,5 @@
 const p = require('path');
 const pluralize = require('pluralize');
-const sprintf = require("sprintf-js").sprintf;
 const Ajv = require('ajv');
 
 export default (Storage) => {
@@ -80,6 +79,6 @@ function _getNewDocumentKey(storage, path) {
 
 function _getNewFileName(id, path) {
     const folder = p.basename(path);
-    const newFileName = sprintf('%s_%s.yaml', id, pluralize.singular(folder));
+    const newFileName = `${id}_${pluralize.singular(folder)}.yaml`;
     return p.join(path, newFileName);
 }

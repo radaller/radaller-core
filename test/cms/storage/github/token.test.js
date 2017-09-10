@@ -69,7 +69,7 @@ it('should return personal tokens', () => {
                     "mode": "cors"
                 }
             );
-            expect(response.json()).toEqual(tokens);
+            expect(response.data).toEqual(tokens);
         });
 });
 
@@ -86,7 +86,7 @@ it('should delete personal token by id', () => {
                     "mode": "cors"
                 }
             );
-            expect(response.json()).toEqual({});
+            expect(response.data).toEqual({});
         });
 });
 
@@ -109,7 +109,7 @@ it('should generate personal token', () => {
                     })
                 }
             );
-            expect(response.json()).toEqual(newToken);
+            expect(response.data).toEqual(newToken);
         });
 });
 
@@ -127,6 +127,6 @@ it('should delete personal token by note', () => {
                     "mode": "cors"
                 }
             );
-            expect(response.json()).toEqual({});
+            expect(response.data).toEqual({});
         });
 });

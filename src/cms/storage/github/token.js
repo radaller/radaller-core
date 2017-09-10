@@ -13,7 +13,7 @@ export default class {
     deletePersonalTokenByNote(baseAuth, note) {
         return this
             .getPersonalTokens(baseAuth)
-            .then(response => response.json())
+            .then(response => response.data)
             .then(tokens => {
                 let deletePromise = Promise.resolve();
                 const token = _findToken(tokens, note);
@@ -36,7 +36,8 @@ export default class {
                 ],
                 "note": baseAuth.appName
             })
-        });
+        })
+        .then(_formatResponse);
     }
 
     getPersonalTokens(baseAuth) {
@@ -45,7 +46,8 @@ export default class {
             method: 'GET',
             mode: 'cors',
             headers: headers
-        });
+        })
+        .then(_formatResponse);
     }
 
     deletePersonalTokenById(baseAuth, tokenId) {
@@ -54,8 +56,18 @@ export default class {
             method: 'DELETE',
             mode: 'cors',
             headers: headers
-        });
+        })
+        .then(_formatResponse);
     }
+}
+
+function _formatResponse(response) {
+    return {
+        data: response.json(),
+        status: response.status,
+        headers: response.headers,
+        response: response
+    };
 }
 
 function _getBaseAuthHeaders({username, password, twoFactorCode}) {

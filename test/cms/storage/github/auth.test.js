@@ -40,7 +40,7 @@ jest.mock('../../../../src/cms/storage/github/token',
 
             if (isValidBaseAuth || isValid2faBaseAuth || isValidAuthTokenDoesntExist) {
                 this.isTokenExist = true;
-                return Promise.resolve({json: () => ({token: "valid_token"})});
+                return Promise.resolve({ data: {token: "valid_token"} });
             } else if (isValidAuthTokenExist) {
                 return Promise.resolve({ status: 422 });
             } else if (isValid2faWithoutCode) {
@@ -62,22 +62,22 @@ const validAuth = {
     token: 'valid_token'
 };
 
-const validBaseAuthCredentials = {
+const validBaseAuth = {
     username: "valid_username",
     password: "valid_password"
 };
 
-const tokenExistValidBaseAuthCredentials = {
+const tokenExistValidBaseAuth = {
     username: "valid_username",
     password: "token_exist_valid_password"
 };
 
-const wrongBaseAuthCredentials = {
+const wrongBaseAuth = {
     username: "wrong_username",
     password: "wrong_password"
 };
 
-const _2faAuthCredentials = {
+const _2faBaseAuth = {
     username: "valid_username",
     password: "2fa_password",
     twoFactorCode: "2fa_code"
@@ -86,50 +86,50 @@ const _2faAuthCredentials = {
 const gitHubAuth = new GitHubAuth();
 
 it('should authenticate on valid token', () => {
-    return gitHubAuth.authenticate("valid_token")
+    return gitHubAuth.getAuthByToken("valid_token")
         .then(auth => {
             expect(auth).toEqual(validAuth)
         });
 });
 
 it('should throw exception on wrong token', () => {
-    return gitHubAuth.authenticate("wrong_token")
+    return gitHubAuth.getAuthByToken("wrong_token")
         .catch(error => {
             expect(error).toEqual({ message: 'Token is not valid.' })
         });
 });
 
 it('should throw exception on wrong credentials', () => {
-    return gitHubAuth.authenticate(wrongBaseAuthCredentials)
+    return gitHubAuth.getAuthByBaseAuth(wrongBaseAuth)
         .catch(error => {
             expect(error).toEqual({ status: 401, message: 'Credentials are not valid.'})
         });
 });
 
 it('should generate token on valid credentials', () => {
-    return gitHubAuth.authenticate(validBaseAuthCredentials)
+    return gitHubAuth.getAuthByBaseAuth(validBaseAuth)
         .then(auth => {
             expect(auth).toEqual(validAuth)
         });
 });
 
 it('should regenerate token if exists on valid credentials', () => {
-    return gitHubAuth.authenticate(tokenExistValidBaseAuthCredentials)
+    return gitHubAuth.getAuthByBaseAuth(tokenExistValidBaseAuth)
         .then(auth => {
             expect(auth).toEqual(validAuth)
         });
 });
 
 it('should throw exception on valid 2fa credentials with missing 2fa code', () => {
-    const _2faCredentialsNo2faCode = (({username, password}) => ({username, password}))(_2faAuthCredentials);
-    return gitHubAuth.authenticate(_2faCredentialsNo2faCode)
+    const _2faCredentialsNo2faCode = (({username, password}) => ({username, password}))(_2faBaseAuth);
+    return gitHubAuth.getAuthByBaseAuth(_2faCredentialsNo2faCode)
         .catch(error => {
             expect(error).toEqual({ status: 401, twoFactor: true});
         });
 });
 
 it('should generate token on valid 2fa credentials', () => {
-    return gitHubAuth.authenticate(_2faAuthCredentials)
+    return gitHubAuth.getAuthByBaseAuth(_2faBaseAuth)
         .then(auth => {
             expect(auth).toEqual(validAuth);
         });

@@ -7,7 +7,7 @@ import {
     _promiseAll
 } from './helper';
 
-const GitHubAPI = require('github-api');
+import GitHubAPI from './github/api';
 const p = require('path');
 
 export default (Document, DocumentCollection) => {
@@ -17,11 +17,7 @@ export default (Document, DocumentCollection) => {
                 username: config.username,
                 token: config.token
             };
-            if (config.apiBase) {
-                this.gh = new GitHubAPI(gitConfig, config.apiBase);
-            } else {
-                this.gh = new GitHubAPI(gitConfig);
-            }
+            this.gh = new GitHubAPI(gitConfig);
             this.repo = this.gh.getRepo(_getFullRepoName(config));
         }
 

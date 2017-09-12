@@ -5,8 +5,8 @@ import Document from './document';
 import DocumentCollection from './document/collection';
 import Cms from './cms';
 
-const GithubCms = Cms(
+const GitHubCms = Cms(
     GithubStorage(Document, DocumentCollection)
 );
 
-export default GithubCms;
+export default GitHubCms;

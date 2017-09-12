@@ -1,25 +1,17 @@
-import GitHubToken from './token';
-
+import { TokenExistError } from './error';
 export default class {
-    constructor() {
-        this.gitHubToken = new GitHubToken();
+    constructor(gitHubToken) {
+        this.gitHubToken = gitHubToken;
     }
 
     getAuthByToken(token) {
         return this.gitHubToken
-            .getUserByToken(token)
-            .getProfile()
+            .getUserProfileByToken(token)
             .then(response => {
                 return {
                     username: response.data.login,
                     token: token
                 };
-            })
-            .catch(e => {
-                if (e.status !== 200) {
-                    throw { message: 'Token is not valid.'};
-                }
-                throw e;
             });
     }
 
@@ -36,27 +28,15 @@ export default class {
     _generatePersonalTokenIfNotExist(baseAuth) {
         return this.gitHubToken
             .generatePersonalToken(baseAuth)
-            .then(_checkTwoFactor)
-            .then(response => {
-                //TODO rewrite with ternary operation
-                if (response.status === 422) {
-                    response = this.gitHubToken
+            .catch(error => {
+                if (error instanceof TokenExistError) {
+                    return this.gitHubToken
                         .deletePersonalTokenByNote(baseAuth, baseAuth.appName)
                         .then(() => {
                             return this.gitHubToken.generatePersonalToken(baseAuth);
                         })
                 }
-                return response;
+                throw error;
             });
     }
-}
-
-function _checkTwoFactor(response) {
-    const twoFactor = response.headers && response.headers.get('X-GitHub-OTP');
-    if (response.status === 401 && twoFactor && twoFactor.indexOf("required") !== -1) {
-        throw { status: response.status, twoFactor: true };
-    } else if (response.status === 401) {
-        throw { status: response.status, message: 'Credentials are not valid.'};
-    }
-    return response;
 }

@@ -1,26 +1,34 @@
 'use strict';
 
 import GitHubToken from '../../../../src/cms/storage/github/token';
+import {UnauthorisedError, TwoFactorError} from '../../../../src/cms/storage/github/error';
+
+import axios from 'axios';
+jest.mock('axios');
 
 const gitHubToken = new GitHubToken();
 
-const tokens = [
-    {
-        "id": 1,
-        "token": "",
-        "note": "Some Application"
-    },
-    {
-        "id": 2,
-        "token": "",
-        "note": "Radaller CMS"
-    },
-];
+const tokens = {
+    data: [
+        {
+            "id": 1,
+            "token": "",
+            "note": "Some Application"
+        },
+        {
+            "id": 2,
+            "token": "",
+            "note": "Radaller CMS"
+        },
+    ]
+};
 
 const newToken = {
-    "id": 2,
-    "token": "valid_token",
-    "note": "Radaller CMS"
+    data: {
+        "id": 2,
+        "token": "valid_token",
+        "note": "Radaller CMS"
+    }
 };
 
 const paths = {
@@ -29,7 +37,7 @@ const paths = {
         "POST": newToken
     },
     "https://api.github.com/authorizations/2": {
-        "DELETE": {}
+        "DELETE": {data: ""}
     }
 };
 
@@ -39,94 +47,127 @@ const validBaseAuth = {
     appName: "Radaller CMS"
 };
 
+const twoFactorBaseAuth = {
+    username: "valid_username",
+    password: "2fa_password"
+};
+
+const wrongBaseAuth = {
+    username: "wrong_username",
+    password: "wrong_password",
+    appName: "Radaller CMS"
+};
+
 const validAuthHeaders = {
     "Authorization": "Basic dmFsaWRfdXNlcm5hbWU6dmFsaWRfcGFzc3dvcmQ=",
     "Content-Type": "application/json"
 };
 
-beforeEach(() => {
-    global.fetch = jest.fn().mockImplementation(
-        (path, headers) => {
-            if (paths[path][headers['method']]) {
-                return Promise.resolve({ json:() => paths[path][headers['method']] })
-            } else {
-                return Promise.reject({ error: `Directory with ${path} was not found.` })
-            }
+const valid2faAuthHeaders = {
+    "Authorization": "Basic dmFsaWRfdXNlcm5hbWU6MmZhX3Bhc3N3b3Jk",
+    "Content-Type": "application/json"
+};
+
+axios.mockImplementation(
+    (options) => {
+        if (options['headers']['Authorization'] === valid2faAuthHeaders['Authorization']) {
+            return Promise.reject({ response: { status: 401, headers:{"x-github-otp":"required"} } });
         }
-    );
+        if (options['headers']['Authorization'] !== validAuthHeaders['Authorization']) {
+            return Promise.reject({ response: { status: 401, headers:{} } });
+        }
+        if (paths[options['url']][options['method']]) {
+            return Promise.resolve(paths[options['url']][options['method']]);
+        } else {
+            return Promise.reject({ error: `Directory with ${options['url']} was not found.` });
+        }
+    });
+
+beforeEach(() => {
+    axios.mockClear();
+});
+
+it('should throw exception on wrong base auth', () => {
+    return gitHubToken
+        .getPersonalTokens(wrongBaseAuth)
+        .catch(error => {
+            expect(error).toBeInstanceOf(UnauthorisedError);
+            expect(error.message).toEqual('Unauthorised.');
+        });
+});
+
+it('should throw exception on 2fa base auth', () => {
+    return gitHubToken
+        .getPersonalTokens(twoFactorBaseAuth)
+        .catch(error => {
+            expect(error).toBeInstanceOf(TwoFactorError);
+            expect(error.message).toEqual('Unauthorised. Two Factor Code required.');
+        });
 });
 
 it('should return personal tokens', () => {
-    jest.spyOn(global, 'fetch');
     return gitHubToken
         .getPersonalTokens(validBaseAuth)
         .then(response => {
-            expect(fetch).toHaveBeenLastCalledWith(
-                'https://api.github.com/authorizations',
+            expect(axios).toHaveBeenLastCalledWith(
                 {
+                    "url": 'https://api.github.com/authorizations',
                     "headers": validAuthHeaders,
-                    "method": "GET",
-                    "mode": "cors"
+                    "method": "GET"
                 }
             );
-            expect(response.data).toEqual(tokens);
+            expect(response).toEqual(tokens);
         });
 });
 
 it('should delete personal token by id', () => {
-    jest.spyOn(global, 'fetch');
     return gitHubToken
         .deletePersonalTokenById(validBaseAuth, 2)
         .then(response => {
-            expect(fetch).toHaveBeenLastCalledWith(
-                'https://api.github.com/authorizations/2',
+            expect(axios).toHaveBeenLastCalledWith(
                 {
+                    "url": 'https://api.github.com/authorizations/2',
                     "headers": validAuthHeaders,
-                    "method": "DELETE",
-                    "mode": "cors"
+                    "method": "DELETE"
                 }
             );
-            expect(response.data).toEqual({});
+            expect(response).toEqual({ data: "" });
         });
 });
 
 it('should generate personal token', () => {
-    jest.spyOn(global, 'fetch');
     return gitHubToken
         .generatePersonalToken(validBaseAuth)
         .then(response => {
-            expect(fetch).toHaveBeenLastCalledWith(
-                'https://api.github.com/authorizations',
+            expect(axios).toHaveBeenLastCalledWith(
                 {
+                    "url": 'https://api.github.com/authorizations',
                     "headers": validAuthHeaders,
                     "method": "POST",
-                    "mode": "cors",
-                    body: JSON.stringify({
+                    "data": {
                         "scopes": [
                             "public_repo"
                         ],
                         "note": "Radaller CMS"
-                    })
+                    }
                 }
             );
-            expect(response.data).toEqual(newToken);
+            expect(response).toEqual(newToken);
         });
 });
 
 it('should delete personal token by note', () => {
-    jest.spyOn(global, 'fetch');
     return gitHubToken
         .deletePersonalTokenByNote(validBaseAuth, "Radaller CMS")
         .then(response => {
-            expect(fetch).toHaveBeenCalledTimes(2);
-            expect(fetch).toHaveBeenLastCalledWith(
-                'https://api.github.com/authorizations/2',
+            expect(axios).toHaveBeenCalledTimes(2);
+            expect(axios).toHaveBeenLastCalledWith(
                 {
+                    "url": 'https://api.github.com/authorizations/2',
                     "headers": validAuthHeaders,
-                    "method": "DELETE",
-                    "mode": "cors"
+                    "method": "DELETE"
                 }
             );
-            expect(response.data).toEqual({});
+            expect(response).toEqual({ data: "" });
         });
 });

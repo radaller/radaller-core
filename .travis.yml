@@ -1,21 +1,21 @@
 language: node_js
 node_js:
-  - node
+- node
 cache:
   directories:
-    - node_modules
+  - node_modules
 script:
-  - npm test
-  - npm run build
+- npm test
+- npm run build
 before_deploy:
-  - git config --global user.email "travis@travis-ci.org"
-  - git config --global user.name "Travis CI"
-  - git remote rm origin
-  - git remote add origin https://${GH_TOKEN}@github.com/radaller/radaller-core.git
-  - npm --no-git-tag-version version from-git || npm --no-git-tag-version version patch
-  - git add package.json
-  - git commit -m "NPM version update. [skip ci]"
-  - git push origin HEAD:master
+- git config --global user.email "travis@travis-ci.org"
+- git config --global user.name "Travis CI"
+- git remote rm origin
+- git remote add origin https://${GH_TOKEN}@github.com/radaller/radaller-core.git
+- npm --no-git-tag-version version from-git || npm --no-git-tag-version version patch
+- git add package.json
+- git commit -m "NPM version update. [skip ci]"
+- git push origin HEAD:master
 deploy:
   skip_cleanup: true
   provider: npm
@@ -27,3 +27,6 @@ deploy:
 env:
   global:
     secure: QwerQMm0yUN0w1Qf2F1BWRe9AMvEc2J0ajuGJM4mNSSEu26r/69PxwOfeZUFXEeAm7VTJSSufXxZ7b4tVxYBcqKPiTdavz/5N8vk497RHJn2viq4ZBQhRyJKzUkioVlhnqahOV2ENZqotPh/+tDnso+Bo7OW/Ev9swgqsHTpPSq7Fe4Eerdm+TJ7Ueaqno5wPQ0UbEcq2DF5oj1+awQvI8dBbqlOuI4ZpbJa7jDdeD4NeTrUrJudmp9s7kgN9cgbiiVdG61aMZlWsMOKTtFNybP5CdufX4UYpx7cv1H0SUOkZ30nsebw983Z4muPrlw8c4jVxbaIHgA/554w7fYSJv3/pZQNwnQKxdbGPGxGzJznO2EjwHZAXtsG2qulpQnZw5x2uwkjvh4Jc+TFAnMFXmQnWsvHXM5dr+Nw3LvLZSL6bgnmqzNExnjanqiww1DwGkaJw0sGiX8fdr9vlqLoUu7tMoEvRUEHoN+Gf2Yj4VMRfoGjhV0Pj8aWO7oupvUG/ySutBG8NchrucpINXBcwtgtNXdCRi73ghn1wlYDMzFnOhddiOPGzCfIYBfXNFSOfQkwPC/OUypjca7MQ/ODah7KgkdsUAvzCgf4bD9yNk9lNLKF+XSpmwf+CrOiA/6YngroBoCAYDmGmrLGfp1PPJEVgbIJvCNrU0CF6u0vGb8=
+notifications:
+  slack:
+    secure: ylYgHmbPJS76d9sSoRVBMrUI77wxBmEq/LsLgDMv4cAIsgpnIyFXQtLppwrUzwaIWP/RZj+hqHhM104aW4PG/KLkbeP0Db458GAKQTR2TEd0HVqWaCNg2rkHcnRubgr6pO/ZlHBUq3uzzFrlhHykpfDGyUMRH7XPfHoYaPVnydyBZScnSHI6jcPN//DFK1AqyQWf7p7dStUeLZtiZqUyDUl8a8h7qw6T0ydU2E7EcRrpvJwyHvtZQqFnrkoseX9imgP3i650TGeXHzDgSHEsITzLMcZvQ7wtgrgwWK86nnzSJsLmdiGxDWP6hekvciU/RQtEOGzNqeeow+0n1HQTvRbsAZ3ZH6Ux/q7UtGLAFLTIqi+7u62KAWnR9Uh7Jyzy8xIzPGNnPG8ggFnHU1wg33D3TzAw7l3z5ldBgcgvVk7wHC6ffMLdThLCm0ghYQ8F5X89nLdjrn0h0qiexOHAe0BYllMRNpxc50G3rw/kZaiEPR9xTDbdHM/nECd0vv+w8Q0ZrNyAso2MCRyO5zos8g7TGyCcz1JJVlgERLo8lFLG1O7FCuBquK7SviR5zaXIRsXRl4L9cQjrEYUosRxQBVQPSW80ObqTXXy9jq6fM8K5rz6RzHlpqAXIlD8QVJ160DzGcmwgnBS7OFbSd/ubDkA+edK4YsocY0mQSzE2W5g=

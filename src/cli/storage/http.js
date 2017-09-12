@@ -1,5 +1,5 @@
 const p = require('path');
-const fetch = require('node-fetch');
+import axios from 'axios';
 
 export default () => {
     return class {
@@ -9,7 +9,7 @@ export default () => {
 
         fetchDocumentContent(path) {
             const fullPath = this.basePath + p.sep + path;
-            return fetch(fullPath).then(res => res.text())
+            return axios(fullPath).then(res => res.text())
                 .catch(e => {console.log(e)});
         }
     }

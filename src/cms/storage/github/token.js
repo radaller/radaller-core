@@ -1,3 +1,6 @@
+import {TokenExistError, TwoFactorError, UnauthorisedError} from './error';
+import axios from 'axios';
+
 const GitHubAPIUser = require('github-api/dist/components/User');
 const Base64 = require('js-base64').Base64;
 
@@ -6,8 +9,10 @@ export default class {
         this.gitHibAPIUrl = process.env.GIT_API_URL ? process.env.GIT_API_URL : 'https://api.github.com';
     }
 
-    getUserByToken(token) {
-        return new GitHubAPIUser(null, {token: token}, this.gitHibAPIUrl);
+    getUserProfileByToken(token) {
+        return new GitHubAPIUser(null, {token: token}, this.gitHibAPIUrl)
+            .getProfile()
+            .catch(_throwCustomException);
     }
 
     deletePersonalTokenByNote(baseAuth, note) {
@@ -26,48 +31,53 @@ export default class {
 
     generatePersonalToken(baseAuth) {
         let headers = _getBaseAuthHeaders(baseAuth);
-        return fetch(`${this.gitHibAPIUrl}/authorizations`, {
+        return axios({
+            url: `${this.gitHibAPIUrl}/authorizations`,
             method: 'POST',
-            mode: 'cors',
             headers: headers,
-            body: JSON.stringify({
+            data: {
                 "scopes": [
                     "public_repo"
                 ],
                 "note": baseAuth.appName
-            })
+            }
         })
-        .then(_formatResponse);
+        .catch(_throwCustomException);
     }
 
     getPersonalTokens(baseAuth) {
         let headers = _getBaseAuthHeaders(baseAuth);
-        return fetch(`${this.gitHibAPIUrl}/authorizations`, {
+        return axios({
+            url: `${this.gitHibAPIUrl}/authorizations`,
             method: 'GET',
-            mode: 'cors',
             headers: headers
         })
-        .then(_formatResponse);
+        .catch(_throwCustomException);
     }
 
     deletePersonalTokenById(baseAuth, tokenId) {
         let headers = _getBaseAuthHeaders(baseAuth);
-        return fetch(`${this.gitHibAPIUrl}/authorizations/${tokenId}`, {
+        return axios({
+            url: `${this.gitHibAPIUrl}/authorizations/${tokenId}`,
             method: 'DELETE',
-            mode: 'cors',
             headers: headers
         })
-        .then(_formatResponse);
+        .catch(_throwCustomException);
     }
 }
 
-function _formatResponse(response) {
-    return {
-        data: response.json(),
-        status: response.status,
-        headers: response.headers,
-        response: response
-    };
+function _throwCustomException(error) {
+    const response = error.response;
+    const twoFactor = response.headers && response.headers['x-github-otp'];
+    if (response.status === 401 && twoFactor && twoFactor.indexOf("required") !== -1) {
+        throw new TwoFactorError(response);
+    } else if (response.status === 401) {
+        throw new UnauthorisedError(response);
+    } else if (response.status === 422) {
+        throw new TokenExistError(response);
+    } else {
+        throw error;
+    }
 }
 
 function _getBaseAuthHeaders({username, password, twoFactorCode}) {

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import HttpCli from '../../src/cli/HttpCli';
 jest.mock('axios');
 
 const fileSystem = {
@@ -13,7 +14,7 @@ const fileSystem = {
 axios.mockImplementation(
     (path) => {
         if (fileSystem[path]) {
-            return Promise.resolve({ text:() => fileSystem[path] });
+            return Promise.resolve({ data: fileSystem[path] });
         } else {
             return Promise.reject({ error: `Directory with ${path} was not found.` });
         }
@@ -23,9 +24,7 @@ beforeEach(() => {
     axios.mockClear();
 });
 
-import HttpCli from '../../src/cli/http-cli';
-
-let httpClient = new HttpCli({
+let httpClient = HttpCli.getClient({
     basePath: 'https://localhost'
 });
 

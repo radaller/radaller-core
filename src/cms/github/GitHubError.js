@@ -8,20 +8,22 @@ class GitHubError extends Error {
     }
 }
 
-export class UnauthorisedError extends GitHubError {
+class GitHubUnauthorisedError extends GitHubError {
     constructor(response) {
         super("Unauthorised.", response);
     }
 }
 
-export class TokenExistError extends GitHubError {
+class GitHubTokenExistError extends GitHubError {
     constructor(response) {
         super("Token already exist.", response);
     }
 }
 
-export class TwoFactorError extends GitHubError {
+class GitHubTwoFactorError extends GitHubError {
     constructor(response) {
         super("Unauthorised. Two Factor Code required.", response);
     }
 }
+
+export {GitHubUnauthorisedError, GitHubTokenExistError, GitHubTwoFactorError};

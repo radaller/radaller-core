@@ -1,6 +1,6 @@
-import GitHubAuth from  '../../../../src/cms/storage/github/auth';
+import GitHubAuth from '../../../src/cms/github/GitHubAuth';
 
-import {TokenExistError, UnauthorisedError} from '../../../../src/cms/storage/github/error';
+import {GitHubTokenExistError, GitHubUnauthorisedError} from '../../../src/cms/github/GitHubError';
 
 let isTokenExist = true;
 let gitHubToken = {};
@@ -27,10 +27,10 @@ gitHubToken.generatePersonalToken = jest.fn().mockImplementation(
             isTokenExist = true;
             return Promise.resolve({ data: {token: "valid_token"} });
         } else if (isValidAuthTokenExist) {
-            const error = new TokenExistError({ status: 422 });
+            const error = new GitHubTokenExistError({ status: 422 });
             return Promise.reject(error);
         } else {
-            const error = new UnauthorisedError({ status: 401 });
+            const error = new GitHubUnauthorisedError({ status: 401 });
             return Promise.reject(error);
         }
     }

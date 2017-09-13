@@ -1,6 +1,6 @@
-import GithubCms from '../../src/cms/github-cms';
+import GitHubCms from '../../src/cms/GitHubCms';
 
-let githubCms = new GithubCms({
+const gitHubStorage = GitHubCms.getRestStorage({
     username: 'username',
     token: 'token',
     owner: 'owner',
@@ -10,7 +10,7 @@ let githubCms = new GithubCms({
 it('read simple content', () => {
     expect.assertions(1);
     const responseObject = {id: '1_simple.yaml', key1: 'value1'};
-    return githubCms.get('simple/1_simple.yaml').then(data => {
+    return gitHubStorage.get('simple/1_simple.yaml').then(data => {
         expect(data).toEqual(JSON.stringify(responseObject))
     });
 });
@@ -24,7 +24,7 @@ it('read simple directory', () => {
             {id: '1_simple.yaml', key1: 'value1'}
         ]
     };
-    return githubCms.get('simple').then(data => {
+    return gitHubStorage.get('simple').then(data => {
         expect(data).toEqual(JSON.stringify(responseObject))
     });
 });

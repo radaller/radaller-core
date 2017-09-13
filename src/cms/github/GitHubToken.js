@@ -1,10 +1,11 @@
-import {TokenExistError, TwoFactorError, UnauthorisedError} from './error';
+import {GitHubTokenExistError, GitHubTwoFactorError, GitHubUnauthorisedError} from './GitHubError';
 import axios from 'axios';
 
-const GitHubAPIUser = require('github-api/dist/components/User');
+import GitHubAPIUser from 'github-api/dist/components/User';
+//TODO use axios base64 authentication
 const Base64 = require('js-base64').Base64;
 
-export default class {
+class GitHubToken {
     constructor() {
         this.gitHibAPIUrl = process.env.GIT_API_URL ? process.env.GIT_API_URL : 'https://api.github.com';
     }
@@ -70,11 +71,11 @@ function _throwCustomException(error) {
     const response = error.response;
     const twoFactor = response.headers && response.headers['x-github-otp'];
     if (response.status === 401 && twoFactor && twoFactor.indexOf("required") !== -1) {
-        throw new TwoFactorError(response);
+        throw new GitHubTwoFactorError(response);
     } else if (response.status === 401) {
-        throw new UnauthorisedError(response);
+        throw new GitHubUnauthorisedError(response);
     } else if (response.status === 422) {
-        throw new TokenExistError(response);
+        throw new GitHubTokenExistError(response);
     } else {
         throw error;
     }
@@ -94,3 +95,5 @@ function _getBaseAuthHeaders({username, password, twoFactorCode}) {
 function _findToken(tokens, note) {
     return tokens.find(token => token.note === note);
 }
+
+export default GitHubToken;

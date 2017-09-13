@@ -1,7 +1,14 @@
-const jsyaml = require('js-yaml');
-const p = require('path');
+import jsyaml from 'js-yaml';
+import p from 'path';
 
-export default class Document {
+/**
+ * Represents the data in {@link Storage}
+ */
+class Document {
+    /**
+     * @param {string} path - path to {@link Document} in {@link Storage}
+     * @param {object|string} content - json or json string representation
+     */
     constructor(path, content) {
         this.id = p.basename(path);
         this.type = p.dirname(path);
@@ -27,3 +34,5 @@ export default class Document {
         return object;
     }
 }
+
+export default Document;

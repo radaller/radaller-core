@@ -1,8 +1,8 @@
 jest.mock('fs-extra');
 
-import FileCli from '../../src/cli/file-cli';
+import FileCli from '../../src/cli/FileCli';
 
-let fileClient = new FileCli({
+const fileClient = FileCli.getClient({
     basePath: './data'
 });
 

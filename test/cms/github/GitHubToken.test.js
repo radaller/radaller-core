@@ -1,7 +1,7 @@
 'use strict';
 
-import GitHubToken from '../../../../src/cms/storage/github/token';
-import {UnauthorisedError, TwoFactorError} from '../../../../src/cms/storage/github/error';
+import GitHubToken from '../../../src/cms/github/GitHubToken';
+import {GitHubUnauthorisedError, GitHubTwoFactorError} from '../../../src/cms/github/GitHubError';
 
 import axios from 'axios';
 jest.mock('axios');
@@ -91,7 +91,7 @@ it('should throw exception on wrong base auth', () => {
     return gitHubToken
         .getPersonalTokens(wrongBaseAuth)
         .catch(error => {
-            expect(error).toBeInstanceOf(UnauthorisedError);
+            expect(error).toBeInstanceOf(GitHubUnauthorisedError);
             expect(error.message).toEqual('Unauthorised.');
         });
 });
@@ -100,7 +100,7 @@ it('should throw exception on 2fa base auth', () => {
     return gitHubToken
         .getPersonalTokens(twoFactorBaseAuth)
         .catch(error => {
-            expect(error).toBeInstanceOf(TwoFactorError);
+            expect(error).toBeInstanceOf(GitHubTwoFactorError);
             expect(error.message).toEqual('Unauthorised. Two Factor Code required.');
         });
 });

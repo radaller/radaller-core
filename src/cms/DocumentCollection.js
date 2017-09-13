@@ -1,4 +1,4 @@
-export default class DocumentCollection {
+class DocumentCollection {
     constructor(documents, total) {
         this.documents = documents;
         this.total = total;
@@ -10,3 +10,5 @@ export default class DocumentCollection {
         return object;
     }
 }
+
+export default DocumentCollection;

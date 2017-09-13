@@ -1,5 +1,8 @@
-import { TokenExistError } from './error';
-export default class {
+import { GitHubTokenExistError } from './GitHubError';
+/**
+ * Defines the interface for CRUD operations on cms documents in storage
+ */
+class GitHubAuth {
     constructor(gitHubToken) {
         this.gitHubToken = gitHubToken;
     }
@@ -29,7 +32,7 @@ export default class {
         return this.gitHubToken
             .generatePersonalToken(baseAuth)
             .catch(error => {
-                if (error instanceof TokenExistError) {
+                if (error instanceof GitHubTokenExistError) {
                     return this.gitHubToken
                         .deletePersonalTokenByNote(baseAuth, baseAuth.appName)
                         .then(() => {
@@ -40,3 +43,5 @@ export default class {
             });
     }
 }
+
+export default GitHubAuth;

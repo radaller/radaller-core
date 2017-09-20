@@ -1,10 +1,10 @@
 import HttpStorage from './storage/HttpStorage';
-import Cli from './Cli';
+import PathResolver from './PathResolver';
 
 class HttpCli {
     static getClient(config) {
         const storage = new HttpStorage(config);
-        return new Cli(storage);
+        return new PathResolver(storage);
     }
 }
 

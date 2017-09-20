@@ -30,7 +30,7 @@ class RestStorageManager {
      * Updates the {@link Document} in {@link Storage}
      *
      * @param {string} path - Document path
-     * @param {object|string} data - Json content to be saved.
+     * @param {(object/string)} data - Json content to be saved.
      */
     put(path, data) {
         const document = new Document(path, data);
@@ -43,7 +43,7 @@ class RestStorageManager {
      * Updates the {@link Document} in {@link Storage}
      *
      * @param {string} path - path to {@link Document}
-     * @param {object|string} data - Json content to be saved.
+     * @param {object/string} data - Json content to be saved.
      */
     post(path, data) {
         return _getNewDocumentKey(this.storage, path)

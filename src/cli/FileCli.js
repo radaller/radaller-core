@@ -1,10 +1,10 @@
 import FileStorage from './storage/FileStorage';
-import Cli from './Cli';
+import PathResolver from './PathResolver';
 
 class FileCli {
     static getClient(config) {
         const storage = new FileStorage(config);
-        return new Cli(storage);
+        return new PathResolver(storage);
     }
 }
 

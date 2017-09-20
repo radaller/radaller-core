@@ -12,6 +12,9 @@
     "*.md",
     "*.js"
   ],
+  "browser": {
+    "fs-extra":false
+  },
   "scripts": {
     "test": "jest",
     "test:coverage": "jest --coverage",

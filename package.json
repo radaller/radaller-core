@@ -2,7 +2,7 @@
   "name": "radaller-core",
   "version": "0.2.3",
   "description": "Cms engine, that allows to store content as yaml.",
-  "main": "index",
+  "main": "./dist/index.js",
   "directories": {
     "lib": "dist"
   },
@@ -13,7 +13,7 @@
     "*.js"
   ],
   "browser": {
-    "fs-extra":false
+    "fs-extra": false
   },
   "scripts": {
     "test": "jest",

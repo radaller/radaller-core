@@ -1,3 +1,6 @@
+/**
+ * Represents the list of {@link Document}'s
+ */
 class DocumentCollection {
     constructor(documents, total) {
         this.documents = documents;

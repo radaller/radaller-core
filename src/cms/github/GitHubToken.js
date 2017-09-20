@@ -5,6 +5,9 @@ import GitHubAPIUser from 'github-api/dist/components/User';
 //TODO use axios base64 authentication
 const Base64 = require('js-base64').Base64;
 
+/**
+ * Provides functionality to manages github access tokens
+ */
 class GitHubToken {
     constructor() {
         this.gitHibAPIUrl = process.env.GIT_API_URL ? process.env.GIT_API_URL : 'https://api.github.com';

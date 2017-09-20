@@ -7,7 +7,7 @@ import p from 'path';
 class Document {
     /**
      * @param {string} path - path to {@link Document} in {@link Storage}
-     * @param {object|string} content - json or json string representation
+     * @param {(object/string)} content - json or json string representation
      */
     constructor(path, content) {
         this.id = p.basename(path);

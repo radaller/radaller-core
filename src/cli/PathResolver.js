@@ -1,6 +1,6 @@
 import refParser from 'json-schema-ref-parser';
 
-class Cli {
+class PathResolver {
     constructor(storage) {
         this.storage = storage;
     }
@@ -31,4 +31,4 @@ function _getCmsResolver(storage) {
     };
 }
 
-export default Cli;
+export default PathResolver;

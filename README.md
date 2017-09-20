@@ -10,12 +10,12 @@ npm install --save radaller-core
 
 - **Import**
 ```javascript
-import HttpCli from 'radaller-core/http-cli';
+import {HttpCli} from 'radaller-core';
 ```
 
 - **HttpCli**
 ```javascript
-const client = new HttpCli({
+const client = HttpCli.getClient({
     basePath: 'https://raw.githubusercontent.com/radaller/radaller-mock-data/master'
 });
 ```

@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/radaller/radaller-core.svg?branch=master)](https://travis-ci.org/radaller/radaller-core)
 [![npm version](https://badge.fury.io/js/radaller-core.svg)](https://badge.fury.io/js/radaller-core)
+[![codecov coverage](https://codecov.io/gh/radaller/radaller-core/branch/master/graph/badge.svg)](https://codecov.io/gh/radaller/radaller-core/branch/refactoring-for-jsdoc)
 
 # Quick start
 

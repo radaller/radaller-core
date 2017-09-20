@@ -14,6 +14,7 @@
   ],
   "scripts": {
     "test": "jest",
+    "test:coverage": "jest --coverage",
     "build": "babel src -d dist --ignore '**/*.test.js'",
     "docs:api": "./node_modules/.bin/jsdoc2md --partial docs/partials/main.hbs docs/partials/header.hbs docs/partials/sig-link.hbs docs/partials/sig-link-html.hbs docs/partials/sig-link-parent.hbs docs/partials/link.hbs docs/partials/body.hbs --no-cache --helper jsdochelper.js  --files \"src/**/*.js\" > docs/api.md",
     "docs:prepare": "./node_modules/.bin/gitbook install",
@@ -58,6 +59,7 @@
     "babel-preset-stage-0": "^6.1.18",
     "babel-runtime": "~6.18.0",
     "gitbook-cli": "^2.3.2",
+    "istanbul": "^0.4.5",
     "jest": "^20.0.4",
     "jsdoc-babel": "^0.3.0",
     "jsdoc-to-markdown": "^3.0.0"

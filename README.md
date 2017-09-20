@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/radaller/radaller-core.svg?branch=master)](https://travis-ci.org/radaller/radaller-core)
+[![npm version](https://badge.fury.io/js/radaller-core.svg)](https://badge.fury.io/js/radaller-core)
 
 # Quick start
 

@@ -1,5 +1,18 @@
-export GitHubCms from './cms/GitHubCms';
-export FileCms from './cms/FileCms';
-export FileCli from './cli/FileCli';
-export HttpCli from './cli/HttpCli';
-export { GitHubUnauthorisedError, GitHubTokenExistError, GitHubTwoFactorError } from './cms/github/GitHubError';
+import GitHubCms from './cms/GitHubCms';
+import FileCms from './cms/FileCms';
+import FileCli from './cli/FileCli';
+import HttpCli from './cli/HttpCli';
+import {
+    GitHubUnauthorisedError,
+    GitHubTokenExistError,
+    GitHubTwoFactorError } from './cms/github/GitHubError';
+
+export {
+    GitHubCms,
+    FileCms,
+    FileCli,
+    HttpCli,
+    GitHubUnauthorisedError,
+    GitHubTokenExistError,
+    GitHubTwoFactorError
+};

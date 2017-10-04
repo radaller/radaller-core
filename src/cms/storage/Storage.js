@@ -1,38 +1,41 @@
 /**
- * Storage Interface
+ * Provides the interface to manage documents in storage
  */
 class Storage {
     /**
      *
-     * @param path
+     * @param {string} path
+     * @return {Document}
      */
     fetchDocument(path) {}
 
     /**
      *
-     * @param type
-     * @param query
+     * @param {string} path
+     * @param {Object} query
+     * @return {DocumentCollection}
      */
-    fetchDocumentCollection(type, query) {}
+    fetchDocumentCollection(path, query) {}
 
     /**
      *
      * @param {Document} document
+     * @return {Document}
      */
     saveDocument(document) {}
 
     /**
      *
-     * @param path
+     * @param {Document} document
      */
-    deleteDocument(path) {}
+    deleteDocument(document) {}
 
     /**
      *
-     * @param type
-     * @param filter
+     * @param {string} path
+     * @param {Object} filter
      */
-    getDocumentList(type, filter = {}) {}
+    getDocumentList(path, filter = {}) {}
 }
 
 export default Storage;

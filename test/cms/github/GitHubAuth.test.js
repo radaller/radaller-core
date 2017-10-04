@@ -43,9 +43,9 @@ gitHubToken.deletePersonalTokenByNote = jest.fn().mockImplementation(
     }
 );
 
-gitHubToken.getUserProfileByToken = jest.fn().mockImplementation(
-    (token) => {
-        if (token === "valid_token") {
+gitHubToken.getUserProfile = jest.fn().mockImplementation(
+    (auth) => {
+        if (auth.token === "valid_token") {
             return Promise.resolve({ data: { login: "valid_username" } });
         }
     }

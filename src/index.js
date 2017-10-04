@@ -7,6 +7,16 @@ import {
     GitHubTokenExistError,
     GitHubTwoFactorError } from './cms/github/GitHubError';
 
+/**
+ * @module Main
+ * @export {GitHubCms}
+ * @export {FileCms}
+ * @export {FileCli}
+ * @export {HttpCli}
+ * @export {GitHubUnauthorisedError}
+ * @export {GitHubTokenExistError}
+ * @export {GitHubTwoFactorError}
+ */
 export {
     GitHubCms,
     FileCms,

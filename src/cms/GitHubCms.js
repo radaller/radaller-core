@@ -9,9 +9,8 @@ import GitHubApi from './github/GitHubApi';
  */
 class GitHubCms {
     /**
-     * Returns the instance of {@link RestStorageManager} for {@link GitHubStorage}
      *
-     * @param {object} config - See {@link GitHubStorage}
+     * @param {StorageConfig} config - See {@link GitHubStorage}
      * @returns {RestStorageManager}
      */
     static getRestStorage(config) {
@@ -20,7 +19,6 @@ class GitHubCms {
     }
 
     /**
-     * Returns instance to manage github authorisations
      *
      * @returns {GitHubAuth}
      */
@@ -31,10 +29,7 @@ class GitHubCms {
 
     /**
      *
-     * @param {object} auth
-     * @param {string} auth.username - The username of github user
-     * @param {string} auth.token - Github token.
-     * @param {string} auth.password - Github password.
+     * @param {Auth} auth
      * @returns {GitHubApi}
      */
     static getApi(auth) {

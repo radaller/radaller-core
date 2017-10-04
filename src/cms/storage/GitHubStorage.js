@@ -10,26 +10,28 @@ import {
 import GitHubAPI from '../github/GitHubApi';
 import Document from '../Document';
 import DocumentCollection from '../DocumentCollection';
-import p from 'path';
 import Storage from './Storage';
+import p from 'path';
 
 /**
  * Uses GitHub to manage {@link Document}'s
+ *
+ * @extends {Storage}
  */
 class GitHubStorage extends Storage {
     /**
      *
-     * @param {object} config
-     * @param {string} config.username
-     * @param {string} config.token
+     * @typedef {Object} StorageConfig
+     * @prop {Auth} auth
+     * @prop {string} repository - repository name
+     */
+    /**
+     *
+     * @param {StorageConfig} config
      */
     constructor(config) {
         super();
-        const gitConfig = {
-            username: config.username,
-            token: config.token
-        };
-        this.gh = new GitHubAPI(gitConfig);
+        this.gh = new GitHubAPI(config.auth);
         this.repo = this.gh.getRepo(_getFullRepoName(config));
     }
 
@@ -64,13 +66,22 @@ class GitHubStorage extends Storage {
             .then(_map(item => item.name))
             .then(_applyFilter(filter));
     }
+
+    saveDocument(document) {
+        return this.repo
+            .writeFile('master', document.getPath(), document.toContentString(), `Document ${document.getPath()} saved.`);
+    }
+
+    deleteDocument(document) {
+        return this.repo.deleteFile('master', document.getPath());
+    }
 }
 
 function _getFullRepoName(config) {
     if (config.repository.indexOf("/") > -1) {
         return config.repository;
     } else {
-        return `${config.username}/${config.repository}`;
+        return `${config.auth.username}/${config.repository}`;
     }
 }
 

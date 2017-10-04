@@ -1,9 +1,10 @@
 import GitHubCms from '../../src/cms/GitHubCms';
 
 const gitHubStorage = GitHubCms.getRestStorage({
-    username: 'username',
-    token: 'token',
-    owner: 'owner',
+    auth: {
+        username: 'username',
+        token: 'token'
+    },
     repository: 'repository'
 });
 

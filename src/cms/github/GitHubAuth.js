@@ -9,7 +9,7 @@ class GitHubAuth {
 
     getAuthByToken(token) {
         return this.gitHubToken
-            .getUserProfileByToken(token)
+            .getUserProfile({token: token})
             .then(response => {
                 return {
                     username: response.data.login,

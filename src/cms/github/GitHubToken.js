@@ -13,8 +13,14 @@ class GitHubToken {
         this.gitHibAPIUrl = process.env.GIT_API_URL ? process.env.GIT_API_URL : 'https://api.github.com';
     }
 
-    getUserProfileByToken(token) {
-        return new GitHubAPIUser(null, {token: token}, this.gitHibAPIUrl)
+    /**
+     *
+     * @param {Auth} auth
+     * @throws {GitHubTwoFactorError}
+     * @throws {GitHubUnauthorisedError}
+     */
+    getUserProfile(auth) {
+        return new GitHubAPIUser(null, auth, this.gitHibAPIUrl)
             .getProfile()
             .catch(_throwCustomException);
     }

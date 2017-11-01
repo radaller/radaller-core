@@ -5,6 +5,8 @@ class GitHubError extends Error {
         Error.captureStackTrace(this, this.constructor);
         this.response = response;
         this.status = response.status;
+        this.constructor = GitHubError;
+        this.__proto__   = GitHubError.prototype;
     }
 }
 
@@ -14,6 +16,9 @@ class GitHubError extends Error {
 class GitHubUnauthorisedError extends GitHubError {
     constructor(response) {
         super("Unauthorised.", response);
+
+        this.constructor = GitHubUnauthorisedError;
+        this.__proto__   = GitHubUnauthorisedError.prototype;
     }
 }
 
@@ -23,6 +28,9 @@ class GitHubUnauthorisedError extends GitHubError {
 class GitHubTokenExistError extends GitHubError {
     constructor(response) {
         super("Token already exist.", response);
+
+        this.constructor = GitHubTokenExistError;
+        this.__proto__   = GitHubTokenExistError.prototype;
     }
 }
 
@@ -32,6 +40,9 @@ class GitHubTokenExistError extends GitHubError {
 class GitHubTwoFactorError extends GitHubError {
     constructor(response) {
         super("Unauthorised. Two Factor Code required.", response);
+
+        this.constructor = GitHubTwoFactorError;
+        this.__proto__   = GitHubTwoFactorError.prototype;
     }
 }
 

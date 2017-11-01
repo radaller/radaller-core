@@ -74,8 +74,7 @@ class GitHubStorage extends Storage {
                 'master',
                 document.getPath(),
                 Base64.encode(document.toContentString()),
-                `Document ${document.getPath()} saved.`,
-                { encode:false }
+                `Document ${document.getPath()} saved.`
             )
             .then(() => document.getPath());
     }

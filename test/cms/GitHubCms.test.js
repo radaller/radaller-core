@@ -29,3 +29,11 @@ it('read simple directory', () => {
         expect(data).toEqual(JSON.stringify(responseObject))
     });
 });
+
+it('save simple content', () => {
+    expect.assertions(1);
+    const responseObject = {id: '1_simple.yaml', key1: 'value1'};
+    return gitHubStorage.put('simple/1_simple.yaml', {content: "content"}).then(data => {
+        expect(data).toEqual(JSON.stringify(responseObject))
+    });
+});

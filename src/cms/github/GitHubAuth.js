@@ -30,7 +30,7 @@ class GitHubAuth {
 
     _generatePersonalTokenIfNotExist(baseAuth) {
         return this.gitHubToken
-            .generatePersonalToken(baseAuth)
+            .generatePersonalToken(baseAuth, baseAuth.appName)
             .catch(error => {
                 if (error instanceof GitHubTokenExistError) {
                     return this.gitHubToken

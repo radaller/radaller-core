@@ -43,9 +43,10 @@ const paths = {
 
 const validBaseAuth = {
     username: "valid_username",
-    password: "valid_password",
-    appName: "Radaller CMS"
+    password: "valid_password"
 };
+
+const appName = "Radaller CMS";
 
 const twoFactorBaseAuth = {
     username: "valid_username",
@@ -54,26 +55,20 @@ const twoFactorBaseAuth = {
 
 const wrongBaseAuth = {
     username: "wrong_username",
-    password: "wrong_password",
-    appName: "Radaller CMS"
+    password: "wrong_password"
 };
 
-const validAuthHeaders = {
-    "Authorization": "Basic dmFsaWRfdXNlcm5hbWU6dmFsaWRfcGFzc3dvcmQ=",
-    "Content-Type": "application/json"
-};
-
-const valid2faAuthHeaders = {
-    "Authorization": "Basic dmFsaWRfdXNlcm5hbWU6MmZhX3Bhc3N3b3Jk",
+const headers = {
     "Content-Type": "application/json"
 };
 
 axios.mockImplementation(
     (options) => {
-        if (options['headers']['Authorization'] === valid2faAuthHeaders['Authorization']) {
+        const {username, password} = options['auth'];
+        if (username === twoFactorBaseAuth.username && password === twoFactorBaseAuth.password) {
             return Promise.reject({ response: { status: 401, headers:{"x-github-otp":"required"} } });
         }
-        if (options['headers']['Authorization'] !== validAuthHeaders['Authorization']) {
+        if (username !== validBaseAuth.username || password !== validBaseAuth.password) {
             return Promise.reject({ response: { status: 401, headers:{} } });
         }
         if (paths[options['url']][options['method']]) {
@@ -112,8 +107,9 @@ it('should return personal tokens', () => {
             expect(axios).toHaveBeenLastCalledWith(
                 {
                     "url": 'https://api.github.com/authorizations',
-                    "headers": validAuthHeaders,
-                    "method": "GET"
+                    "headers": headers,
+                    "method": "GET",
+                    "auth": validBaseAuth
                 }
             );
             expect(response).toEqual(tokens);
@@ -127,8 +123,9 @@ it('should delete personal token by id', () => {
             expect(axios).toHaveBeenLastCalledWith(
                 {
                     "url": 'https://api.github.com/authorizations/2',
-                    "headers": validAuthHeaders,
-                    "method": "DELETE"
+                    "headers": headers,
+                    "method": "DELETE",
+                    "auth": validBaseAuth
                 }
             );
             expect(response).toEqual({ data: "" });
@@ -137,18 +134,19 @@ it('should delete personal token by id', () => {
 
 it('should generate personal token', () => {
     return gitHubToken
-        .generatePersonalToken(validBaseAuth)
+        .generatePersonalToken(validBaseAuth, appName)
         .then(response => {
             expect(axios).toHaveBeenLastCalledWith(
                 {
                     "url": 'https://api.github.com/authorizations',
-                    "headers": validAuthHeaders,
+                    "headers": headers,
                     "method": "POST",
+                    "auth": validBaseAuth,
                     "data": {
                         "scopes": [
                             "public_repo"
                         ],
-                        "note": "Radaller CMS"
+                        "note": appName
                     }
                 }
             );
@@ -164,8 +162,9 @@ it('should delete personal token by note', () => {
             expect(axios).toHaveBeenLastCalledWith(
                 {
                     "url": 'https://api.github.com/authorizations/2',
-                    "headers": validAuthHeaders,
-                    "method": "DELETE"
+                    "headers": headers,
+                    "method": "DELETE",
+                    "auth": validBaseAuth
                 }
             );
             expect(response).toEqual({ data: "" });

@@ -2,8 +2,6 @@ import {GitHubTokenExistError, GitHubTwoFactorError, GitHubUnauthorisedError} fr
 import axios from 'axios';
 
 import GitHubAPIUser from 'github-api/dist/components/User';
-//TODO use axios base64 authentication
-import { Base64 } from 'js-base64';
 
 /**
  * Provides functionality to manages github access tokens
@@ -39,17 +37,18 @@ class GitHubToken {
             });
     }
 
-    generatePersonalToken(baseAuth) {
+    generatePersonalToken(baseAuth, note) {
         let headers = _getBaseAuthHeaders(baseAuth);
         return axios({
             url: `${this.gitHibAPIUrl}/authorizations`,
             method: 'POST',
             headers: headers,
+            auth: _getBaseAuth(baseAuth),
             data: {
                 "scopes": [
                     "public_repo"
                 ],
-                "note": baseAuth.appName
+                "note": note
             }
         })
         .catch(_throwCustomException);
@@ -60,7 +59,8 @@ class GitHubToken {
         return axios({
             url: `${this.gitHibAPIUrl}/authorizations`,
             method: 'GET',
-            headers: headers
+            headers: headers,
+            auth: _getBaseAuth(baseAuth),
         })
         .catch(_throwCustomException);
     }
@@ -70,7 +70,8 @@ class GitHubToken {
         return axios({
             url: `${this.gitHibAPIUrl}/authorizations/${tokenId}`,
             method: 'DELETE',
-            headers: headers
+            headers: headers,
+            auth: _getBaseAuth(baseAuth),
         })
         .catch(_throwCustomException);
     }
@@ -90,11 +91,13 @@ function _throwCustomException(error) {
     }
 }
 
-function _getBaseAuthHeaders({username, password, twoFactorCode}) {
+function _getBaseAuth({username, password}) {
+    return {username: username, password: password};
+}
+
+function _getBaseAuthHeaders({twoFactorCode}) {
     let headers = {};
     headers["Content-Type"] = "application/json";
-    const encodedBaseAuth = Base64.encode(`${username}:${password}`);
-    headers["Authorization"] = `Basic ${encodedBaseAuth}`;
     if (twoFactorCode) {
         headers["X-GitHub-OTP"] = twoFactorCode;
     }

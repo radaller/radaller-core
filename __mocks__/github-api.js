@@ -1,3 +1,4 @@
+import { Base64 } from 'js-base64';
 const fileSystem = {
     'simple': {
         data: [
@@ -38,11 +39,22 @@ let repo = {};
 
 repo.getContents = (hash, path) => {
     return new Promise((resolve, reject) => {
-        process.nextTick(
-            () => fileSystem[path] ? resolve(fileSystem[path]) : reject({
-                error: 'Directory with ' + path + ' was not found.',
+        fileSystem[path] ? resolve(fileSystem[path]) : reject({
+            error: 'Directory with ' + path + ' was not found.',
+        })
+    });
+};
+
+repo.writeFile = (branch, path, contentBase64, comment) => {
+    return new Promise((resolve, reject) => {
+        if (Base64.encode(Base64.decode(contentBase64)) !== contentBase64) {
+            reject({
+                error: 'Content is not encoded',
             })
-        );
+        }
+        fileSystem[path] ? resolve(path) : reject({
+            error: 'Directory with ' + path + ' was not found.',
+        })
     });
 };
 

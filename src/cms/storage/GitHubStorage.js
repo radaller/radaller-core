@@ -12,6 +12,7 @@ import Document from '../Document';
 import DocumentCollection from '../DocumentCollection';
 import Storage from './Storage';
 import p from 'path';
+import { Base64 } from 'js-base64';
 
 /**
  * Uses GitHub to manage {@link Document}'s
@@ -69,7 +70,14 @@ class GitHubStorage extends Storage {
 
     saveDocument(document) {
         return this.repo
-            .writeFile('master', document.getPath(), document.toContentString(), `Document ${document.getPath()} saved.`);
+            .writeFile(
+                'master',
+                document.getPath(),
+                Base64.encode(document.toContentString()),
+                `Document ${document.getPath()} saved.`,
+                { encode:false }
+            )
+            .then(() => document.getPath());
     }
 
     deleteDocument(document) {

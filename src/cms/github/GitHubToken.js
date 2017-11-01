@@ -3,7 +3,7 @@ import axios from 'axios';
 
 import GitHubAPIUser from 'github-api/dist/components/User';
 //TODO use axios base64 authentication
-const Base64 = require('js-base64').Base64;
+import { Base64 } from 'js-base64';
 
 /**
  * Provides functionality to manages github access tokens

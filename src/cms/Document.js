@@ -19,6 +19,8 @@ class Document {
             this.data = content;
         } else {
             this.data = jsyaml.load(content);
+            this.data.id = undefined;
+            delete this.data.id;
         }
     }
     getPath() {

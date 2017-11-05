@@ -74,13 +74,14 @@ class GitHubStorage extends Storage {
                 'master',
                 document.getPath(),
                 Base64.encode(document.toContentString()),
-                `Document ${document.getPath()} saved.`
+                `Document ${document.getPath()} saved.`,
+                { encode: false }
             )
             .then(() => document.getPath());
     }
 
-    deleteDocument(document) {
-        return this.repo.deleteFile('master', document.getPath());
+    deleteDocument(path) {
+        return this.repo.deleteFile('master', path);
     }
 }
 

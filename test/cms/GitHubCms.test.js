@@ -30,6 +30,17 @@ it('read simple directory', () => {
     });
 });
 
+it('read empty directory', () => {
+    expect.assertions(1);
+    const responseObject = {
+        total: 0,
+        items: []
+    };
+    return gitHubStorage.get('empty').then(data => {
+        expect(data).toEqual(JSON.stringify(responseObject))
+    });
+});
+
 it('save simple content', () => {
     expect.assertions(1);
     const responseObject = {id: '1_simple.yaml', key1: 'value1'};

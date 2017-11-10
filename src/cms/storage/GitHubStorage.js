@@ -62,6 +62,7 @@ class GitHubStorage extends Storage {
         return this.repo
             .getContents('master', path, true)
             .then(response => response.data)
+            .catch(e => ([]))
             .then(_filter(item => item.type === "file"))
             .then(_reverse)
             .then(_map(item => item.name))

@@ -43,7 +43,7 @@
     "react"
   ],
   "dependencies": {
-    "ajv": "^5.2.2",
+    "ajv": "^6.0.0",
     "axios": "^0.17.0",
     "fs-extra": "^4.0.2",
     "github-api": "^3.0.0",

@@ -64,7 +64,7 @@
     "istanbul": "^0.4.5",
     "jest": "^21.2.1",
     "jsdoc-babel": "^0.3.0",
-    "jsdoc-to-markdown": "^3.0.0"
+    "jsdoc-to-markdown": "^4.0.0"
   },
   "bugs": {
     "url": "https://github.com/radaller/radaller-core/issues"

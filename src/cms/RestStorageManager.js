@@ -72,6 +72,7 @@ class RestStorageManager {
         return this.storage
             .fetchDocument(schemaPath)
             .then((schema) => {
+                delete schema.id;
                 const ajv = new Ajv();
                 const validate = ajv.compile(schema);
                 const valid = validate(data);
